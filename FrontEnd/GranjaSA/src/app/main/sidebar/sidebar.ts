@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 
 @Component({
   selector: 'app-sidebar',
@@ -7,5 +7,5 @@ import { Component } from '@angular/core';
   styleUrl: './sidebar.scss'
 })
 export class Sidebar {
-
+    @Input() isOpen: boolean = false;
 }
