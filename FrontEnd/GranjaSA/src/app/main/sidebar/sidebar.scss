@@ -3,10 +3,18 @@
 }
 
 mat-sidenav-container {
-  height: calc(100vh - 32px);
+  height: calc(100vh - 64px);
 }
 
 mat-sidenav {
   background: #7FBF61 !important;
   border-radius: 0.125rem;
+}
+
+span, .mat-icon{
+  color: #F5F5DC !important;
+}
+
+a{
+  margin-top: 10px;
 }
