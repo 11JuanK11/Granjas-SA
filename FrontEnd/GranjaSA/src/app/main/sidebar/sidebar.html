@@ -1,0 +1,15 @@
+<mat-sidenav-container>
+    <mat-sidenav #snav opened mode="side" [style.width]="'250px'">
+        <div class ="sidenav-header">
+            <img src="assets/admin.jpg" alt="no" style="border-radius: 50%; height: 200px; width: 200px; margin-left: 25px; margin-top: 20px;">
+            <div class="header-text">
+
+            </div>
+        </div>
+    </mat-sidenav>
+
+    <mat-sidenav-content class="content">
+        <router-outlet></router-outlet>
+    </mat-sidenav-content>
+
+</mat-sidenav-container>
