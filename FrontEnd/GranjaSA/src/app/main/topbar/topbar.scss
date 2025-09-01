@@ -1,0 +1,14 @@
+.example-spacer {
+    flex: 1 1 auto;
+}
+
+mat-toolbar {
+    background: #5A8D3F !important;
+    border-bottom: 1px solid #4b7a33 !important;
+    position: relative;
+    z-index: 5;
+}
+
+h1, .mat-icon{
+    color: #F5F5DC !important;
+}
