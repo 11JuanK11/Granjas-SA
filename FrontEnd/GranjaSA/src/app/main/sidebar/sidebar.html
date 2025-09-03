@@ -1,25 +1,27 @@
 <mat-sidenav-container>
-    <mat-sidenav #snav opened mode="side" [style.width]="'250px'">
-        <div class ="sidenav-header" style="text-align: center;">
-            <img src="assets/admin.jpg" alt="no" style="border-radius: 50%; height: 150px; width: 150px; ; margin: 20px 0px;">
+    <mat-sidenav #snav opened mode="side" [style.width]="sidenavWidth">
+        <div class ="sidenav-header" style="text-align: center;" >
+            <img src="assets/admin.jpg" alt="no"[style.width]="profilePictureSize" [style.height]="profilePictureSize" style="border-radius: 50%; margin: 20px 0px;">
             <div class="header-text" style="margin: 20px 0px; color:  #F5F5DC;">
-                <h2>Administrador</h2>
-                <p style=" font-size: medium">Nombre</p>
+                <h2 [style.display]="showText">Administrador</h2>
+                <p [style.display]="showText" style=" font-size: medium">Nombre</p>
             </div>
             <hr style="border: 1px solid  #F5F5DC; margin: 0 20px;">
         </div>
         <mat-nav-list>
             @for (item of menuItems(); track $index) {
-                <a mat-list-item >
-                    <mat-icon matListItemIcon class="iconos"> {{item.icon}} </mat-icon>
-                    <span matListItemTitle class="iconos">{{item.label}}</span>
+                <a mat-list-item [routerLink]="(item.route)" 
+                routerLinkActive="active-link" 
+                >
+                    <mat-icon matListItemIcon> {{item.icon}} </mat-icon>
+                    <span matListItemTitle >{{item.label}}</span>
                 </a>
                     
             }
         </mat-nav-list>
     </mat-sidenav>
 
-    <mat-sidenav-content class="content">
+    <mat-sidenav-content class="content" [style.marginLeft]="sidenavWidth">
         <router-outlet></router-outlet>
     </mat-sidenav-content>
 
