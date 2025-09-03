@@ -1,8 +1,12 @@
 <mat-toolbar class="mat-elevation-z3">
-    <button matIconButton class="example-icon" matTooltip="Abrir menú" >
+    <button matIconButton class="example-icon" matTooltip="Abrir menú" (click)="onMenuToggle()">
     <mat-icon>menu</mat-icon>
     </button>
-    <h1 style="font-size: x-large; margin-top: 3px;">Granja S.A.</h1>
+    <a routerLink="/inicio" style="display: flex; align-items: center; text-decoration: none;">
+        <img style="height: 40px; margin: 0px 8px; border-radius: 30%;" src="assets/favicon.ico" alt="logo">
+        <h1 style="font-size: x-large; margin-top: 3px;">Granja S.A.</h1>
+    </a>
+
     <span class="example-spacer"></span>
     
     <button style="margin: 4px;" matIconButton class="example-icon favorite-icon" matTooltip="Subir archivo de excel">
