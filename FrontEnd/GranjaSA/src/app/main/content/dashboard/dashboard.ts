@@ -7,6 +7,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
+import { Graficos } from '../graficos/graficos';
 
 @Component({
   selector: 'app-dashboard',
@@ -17,6 +18,7 @@ import { MatCardModule } from '@angular/material/card';
     MatIconModule,
     MatButtonModule,
     MatCardModule,
+    Graficos
   ],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.scss',

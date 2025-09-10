@@ -13,16 +13,20 @@ import { catchError, tap } from 'rxjs';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { DialogoEditar } from '../dialogos/dialogo-editar/dialogo-editar';
+import { DialogoEliminar } from '../dialogos/dialogo-eliminar/dialogo-eliminar';
 
 
 
 @Component({
   selector: 'app-porcinos',
-  imports: [MatFormFieldModule, MatInputModule, MatTableModule, MatSortModule, MatPaginatorModule, MatIconModule, MatButtonModule, MatTooltipModule],
+  imports: [MatFormFieldModule, MatInputModule, MatTableModule, MatSortModule, MatPaginatorModule, MatIconModule, MatButtonModule, MatTooltipModule, MatDialogModule],
   templateUrl: './porcinos.html',
   styleUrl: './porcinos.scss'
 })
 export class Porcinos implements AfterViewInit{
+  readonly dialog = inject(MatDialog);
   displayedColumns: string[] = ['Identificador', 'Raza', 'Edad', 'Peso', 'Alimentacion', 'Cliente', 'Acciones'];
   dataSource: MatTableDataSource<Porcino>;
   servicioPorcino = inject(ServicioPorcino);
@@ -77,14 +81,21 @@ export class Porcinos implements AfterViewInit{
     }
   }
 
-editarPorcino(id: string) {
-  console.log("Editar porcino con ID:", id);
-  // Aquí podrías abrir un modal o redirigir a un formulario de edición
-}
+  abrirEditar(porcinoId: string) {
+    const dialogRef = this.dialog.open(DialogoEditar);
 
-eliminarPorcino(id: string) {
-  console.log("Eliminar porcino con ID:", id);
-  // Aquí puedes llamar al servicio para eliminar el porcino
-}
+    dialogRef.componentInstance.porcinoData = this.porcinos.filter(p => p.id === porcinoId)[0];
+    dialogRef.afterClosed().subscribe(result => {
+      console.log(`Dialog result: ${result}`);
+    });
+  }
+
+  abrirEliminar(porcinoId: string) {
+    const dialogRef = this.dialog.open(DialogoEliminar);
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log(`Dialog result: ${result}`);
+    });
+  }
 
 }
