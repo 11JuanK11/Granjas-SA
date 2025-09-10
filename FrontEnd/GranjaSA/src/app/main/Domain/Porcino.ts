@@ -3,14 +3,14 @@ import { RazaPorcino } from "./RazaPorcino";
 import { Alimentacion } from "./Alimentacion";
 
 export class Porcino {
-    id: number;
+    id: string;
     raza: RazaPorcino;
     edad: number;
     peso: number;
     alimentacion: Alimentacion;
-    cliente: Cliente | undefined;
+    cliente: Cliente | undefined | null;
 
-    constructor(id: number, raza: RazaPorcino, edad: number, peso: number, alimentacion: Alimentacion, cliente?: Cliente) {
+    constructor(id: string, raza: RazaPorcino, edad: number, peso: number, alimentacion: Alimentacion, cliente: Cliente | undefined | null) {
         this.id = id;
         this.raza = raza;
         this.edad = edad;
