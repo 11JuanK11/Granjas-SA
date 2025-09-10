@@ -49,7 +49,7 @@ export class ServicioPorcino {
       );
   }
 
-  getById(id: number): Observable<Porcino> {
+  getById(id: string): Observable<Porcino> {
     return this.http.get<Porcino>(`${this.baseUrl}/${id}`)
       .pipe(catchError(this.handleError));
   }
@@ -59,12 +59,12 @@ export class ServicioPorcino {
       .pipe(catchError(this.handleError));
   }
 
-  update(id: number, porcino: Porcino): Observable<Porcino> {
+  update(id: string, porcino: Porcino): Observable<Porcino> {
     return this.http.put<Porcino>(`${this.baseUrl}/${id}`, porcino, { headers: this.headers })
       .pipe(catchError(this.handleError));
   }
 
-  delete(id: number): Observable<void> {
+  delete(id: string): Observable<void> {
     return this.http.delete<void>(`${this.baseUrl}/${id}`)
       .pipe(catchError(this.handleError));
   }
