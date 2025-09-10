@@ -3,8 +3,9 @@ import { inject, Injectable } from '@angular/core';
 import { Alimentacion } from 'app/main/Domain/Alimentacion';
 import { Cliente } from 'app/main/Domain/Cliente';
 import { Porcino } from 'app/main/Domain/Porcino';
+import { PorcinoEvent } from 'app/main/Domain/PorcinoEvent';
 import { RazaPorcino } from 'app/main/Domain/RazaPorcino';
-import { catchError, Observable, of, tap, throwError } from 'rxjs';
+import { catchError, delay, Observable, of, Subject, tap, throwError } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -16,6 +17,12 @@ export class ServicioPorcino {
     'Content-Type': 'application/json',
     'Accept': 'application/json'
   });
+
+  private useMock = true;
+
+  private porcinoSubject = new Subject<PorcinoEvent>();
+  porcino$ = this.porcinoSubject.asObservable();
+
 
     porcinosEjem: Porcino[] = [
     new Porcino('A1', RazaPorcino.YORK, 6, 80, new Alimentacion(1, 'Dieta de engorde', '2kg/día'), null),
@@ -41,33 +48,75 @@ export class ServicioPorcino {
 ];
 
   getAll(): Observable<Porcino[]> {
-    return of(this.porcinosEjem);
-    return this.http.get<Porcino[]>(`${this.baseUrl}/`)
+    if (this.useMock) {
+      return of(this.porcinosEjem).pipe(
+        delay(300),
+        tap(data => console.log('Fetched porcinos (mock):', data))
+      );
+    } else {
+      return this.http.get<Porcino[]>(`${this.baseUrl}/`).pipe(
+        tap(data => console.log('Fetched porcinos (API):', data)),
+        catchError(this.handleError)
+      );
+    }
+  }
+
+  // ===================== GET BY ID =====================
+  getById(id: string): Observable<Porcino> {
+    if (this.useMock) {
+      const porcino = this.porcinosEjem.find(p => p.id === id);
+      return porcino ? of(porcino) : throwError(() => new Error('Porcino no encontrado'));
+    } else {
+      return this.http.get<Porcino>(`${this.baseUrl}/${id}`).pipe(
+        catchError(this.handleError)
+      );
+    }
+  }
+
+create(porcino: Porcino): Observable<Porcino> {
+  if (this.useMock) {
+    this.porcinosEjem.push(porcino);
+    this.porcinoSubject.next({ porcino }); // notifica creación
+    return of(porcino);
+  } else {
+    return this.http.post<Porcino>(`${this.baseUrl}/`, porcino, { headers: this.headers })
       .pipe(
-        tap(data => console.log('Fetched porcinos:', data)),
+        tap(newPorcino => this.porcinoSubject.next({ porcino: newPorcino })),
         catchError(this.handleError)
       );
   }
+}
 
-  getById(id: number): Observable<Porcino> {
-    return this.http.get<Porcino>(`${this.baseUrl}/${id}`)
-      .pipe(catchError(this.handleError));
-  }
-
-  create(porcino: Porcino): Observable<Porcino> {
-    return this.http.post<Porcino>(`${this.baseUrl}/`, porcino, { headers: this.headers })
-      .pipe(catchError(this.handleError));
-  }
-
-  update(id: number, porcino: Porcino): Observable<Porcino> {
+update(id: string, porcino: Porcino): Observable<Porcino> {
+  if (this.useMock) {
+    const index = this.porcinosEjem.findIndex(p => p.id === id);
+    if (index !== -1) this.porcinosEjem[index] = porcino;
+    this.porcinoSubject.next({ porcino }); // notifica actualización
+    return of(porcino);
+  } else {
     return this.http.put<Porcino>(`${this.baseUrl}/${id}`, porcino, { headers: this.headers })
-      .pipe(catchError(this.handleError));
+      .pipe(
+        tap(updated => this.porcinoSubject.next({ porcino: updated })),
+        catchError(this.handleError)
+      );
+  }
+}
+
+  // ===================== DELETE =====================
+  delete(id: string): Observable<void> {
+    if (this.useMock) {
+      this.porcinosEjem = this.porcinosEjem.filter(p => p.id !== id);
+      this.porcinoSubject.next({ deletedId: id }); // notifica eliminación
+      return of(void 0);
+    } else {
+      return this.http.delete<void>(`${this.baseUrl}/${id}`)
+        .pipe(
+          tap(() => this.porcinoSubject.next({ deletedId: id })),
+          catchError(this.handleError)
+        );
+    }
   }
 
-  delete(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.baseUrl}/${id}`)
-      .pipe(catchError(this.handleError));
-  }
 
   private handleError(error: HttpErrorResponse): Observable<never> {
     let errorMessage = error.error instanceof ErrorEvent

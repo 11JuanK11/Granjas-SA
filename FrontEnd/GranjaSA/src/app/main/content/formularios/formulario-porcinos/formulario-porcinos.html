@@ -1,0 +1,56 @@
+<form [formGroup]="porcinoForm" (ngSubmit)="onSubmit()" class="p-4">
+
+    <mat-form-field appearance="outline" class="w-100 mb-3">
+        <mat-label>ID</mat-label>
+        <input matInput formControlName="id" placeholder="Identificador del porcino" [readonly]="!nuevoPorcino">
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="w-100 mb-3">
+        <mat-label>Raza</mat-label>
+        <mat-select formControlName="raza">
+            @for (raza of razas; track $index) {
+                <mat-option [value]="raza">{{ raza }}</mat-option>
+            }
+        </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="w-100 mb-3">
+        <mat-label>Edad (años)</mat-label>
+        <input matInput type="number" formControlName="edad">
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="w-100 mb-3">
+        <mat-label>Peso (kg)</mat-label>
+        <input matInput type="number" formControlName="peso" min="0">
+    </mat-form-field>
+
+    <h3>Alimentación</h3>
+    <div formGroupName="alimentacion">
+    <mat-form-field appearance="outline" class="w-100 mb-3">
+        <mat-label>Descripción</mat-label>
+        <input matInput formControlName="descripcion" placeholder="Ej. Dieta de engorde">
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="w-100 mb-3">
+        <mat-label>Dosis</mat-label>
+        <input matInput formControlName="dosis" placeholder="Ej. 2kg/día" min="0">
+    </mat-form-field>
+    </div>
+
+    <mat-form-field appearance="outline" class="w-100 mb-3">
+        <mat-label>Cliente</mat-label>
+        <mat-select formControlName="cliente" [compareWith]="compareClientes">
+            <mat-option [value]="null">Sin asignar</mat-option>
+            @for (cliente of clientes; track cliente.cedula) {
+                <mat-option [value]="cliente">
+                    {{ cliente.nombres }} {{ cliente.apellidos }}
+                </mat-option>
+            }
+        </mat-select>
+    </mat-form-field>
+
+
+    <button mat-raised-button color="primary" type="submit">
+        Enviar información
+    </button>
+</form>

@@ -1,10 +1,11 @@
-import {AfterViewInit, Component, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, inject, ViewChild} from '@angular/core';
 import {MatPaginator, MatPaginatorModule} from '@angular/material/paginator';
 import {MatSort, MatSortModule} from '@angular/material/sort';
 import {MatTableDataSource, MatTableModule} from '@angular/material/table';
 import {MatInputModule} from '@angular/material/input';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {Cliente} from '../../Domain/Cliente';
+import { ServicioCliente } from 'app/main/Services/ServicioCliente/servicio-cliente';
 
 
 @Component({
@@ -16,12 +17,12 @@ import {Cliente} from '../../Domain/Cliente';
 export class Clientes implements AfterViewInit {
   displayedColumns: string[] = ['Cedula', 'Nombres', 'Apellidos', 'Direccion', 'Telefono'];
   dataSource: MatTableDataSource<Cliente>;
+  servicioCliente = inject(ServicioCliente);
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
   constructor() {
-    // Create 100 users
     const users = this.clientes;
 
     this.dataSource = new MatTableDataSource(users);
