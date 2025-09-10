@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, Output, EventEmitter, inject} from '@angular/core';
+import { Component, Input, OnInit, inject} from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -46,6 +46,8 @@ export class FormularioPorcinos implements OnInit {
     new Cliente(1020, 'Sergio', 'Herrera', 'Avenida 25 #3-35', '3253456789')
   ];
 
+  nuevoPorcino: boolean = true;
+
   constructor(private fb: FormBuilder) {}
 
   ngOnInit(): void {
@@ -62,6 +64,7 @@ export class FormularioPorcinos implements OnInit {
     });
     console.log("Datos del porcino recibidos en el formulario:", this.porcinoData);
     if (this.porcinoData) {
+      this.nuevoPorcino = false;
       this.porcinoForm.patchValue({
         id: this.porcinoData.id,
         raza: this.porcinoData.raza,
@@ -79,9 +82,27 @@ export class FormularioPorcinos implements OnInit {
   onSubmit(): void {
     if (this.porcinoForm.valid) {
       const porcino: Porcino = this.porcinoForm.value;
-      console.log('Formulario enviado:', porcino);
+      if(this.nuevoPorcino){
+        this.servicioPorcino.create(porcino).subscribe({
+          next: porcino => {
+            console.log('Formulario enviado C:', porcino);
+          },
+          error(err) {
+              console.error(err);
+          },
+        });
+      }else{
+        this.servicioPorcino.update(porcino.id, porcino).subscribe({
+          next: porcino => {
+            console.log('Formulario enviado A:', porcino);
+          },
+          error(err) {
+              console.error(err);
+          },
+        });
+      }
 
-      
+
     } else {
       console.log('Formulario inválido');
     }

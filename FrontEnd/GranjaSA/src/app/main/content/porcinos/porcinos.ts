@@ -16,6 +16,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { DialogoEditar } from '../dialogos/dialogo-editar/dialogo-editar';
 import { DialogoEliminar } from '../dialogos/dialogo-eliminar/dialogo-eliminar';
+import { DialogoIngresar } from '../dialogos/dialogo-ingresar/dialogo-ingresar';
 
 
 
@@ -25,7 +26,7 @@ import { DialogoEliminar } from '../dialogos/dialogo-eliminar/dialogo-eliminar';
   templateUrl: './porcinos.html',
   styleUrl: './porcinos.scss'
 })
-export class Porcinos implements AfterViewInit{
+export class Porcinos implements OnInit, AfterViewInit{
   readonly dialog = inject(MatDialog);
   displayedColumns: string[] = ['Identificador', 'Raza', 'Edad', 'Peso', 'Alimentacion', 'Cliente', 'Acciones'];
   dataSource: MatTableDataSource<Porcino>;
@@ -38,7 +39,6 @@ export class Porcinos implements AfterViewInit{
   constructor() {
     this.servicioPorcino.getAll().subscribe({
       next: (porcinos) => {
-        console.log("Lista de porcinos:", porcinos);
         this.porcinos = porcinos.map(p => ({
           ...p,
             cliente: p.cliente ?? {
@@ -52,7 +52,29 @@ export class Porcinos implements AfterViewInit{
       },
       error: (err) => console.error("Error:", err)
     });
+    console.log("Lista de porcinos:", this.porcinos);
+
     this.dataSource = new MatTableDataSource(this.porcinos);  
+  }
+
+    ngOnInit() {
+      this.servicioPorcino.getAll().subscribe(data => {
+      this.porcinos = data;
+      this.dataSource.data = [...this.porcinos];
+    });
+
+  this.servicioPorcino.porcino$.subscribe(event => {
+    if (event.porcino) {
+      const index = this.porcinos.findIndex(p => p.id === event.porcino!.id);
+      if (index !== -1) this.porcinos[index] = event.porcino!;
+      else this.porcinos.push(event.porcino!);
+    } else if (event.deletedId) {
+      this.porcinos = this.porcinos.filter(p => p.id !== event.deletedId);
+    }
+
+    this.dataSource.data = [...this.porcinos];
+  });
+
   }
 
   ngAfterViewInit() {
@@ -81,6 +103,13 @@ export class Porcinos implements AfterViewInit{
     }
   }
 
+  abrirAgregar() {
+    const dialogRef = this.dialog.open(DialogoIngresar);
+    dialogRef.afterClosed().subscribe(result => {
+      console.log(`Dialog result: ${result}`);
+    });
+  }
+
   abrirEditar(porcinoId: string) {
     const dialogRef = this.dialog.open(DialogoEditar);
 
@@ -93,6 +122,7 @@ export class Porcinos implements AfterViewInit{
   abrirEliminar(porcinoId: string) {
     const dialogRef = this.dialog.open(DialogoEliminar);
 
+    dialogRef.componentInstance.porcinoId = porcinoId;
     dialogRef.afterClosed().subscribe(result => {
       console.log(`Dialog result: ${result}`);
     });

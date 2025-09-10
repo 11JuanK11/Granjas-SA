@@ -2,7 +2,7 @@
 
     <mat-form-field appearance="outline" class="w-100 mb-3">
         <mat-label>ID</mat-label>
-        <input matInput formControlName="id" placeholder="Identificador del porcino">
+        <input matInput formControlName="id" placeholder="Identificador del porcino" [readonly]="!nuevoPorcino">
     </mat-form-field>
 
     <mat-form-field appearance="outline" class="w-100 mb-3">
