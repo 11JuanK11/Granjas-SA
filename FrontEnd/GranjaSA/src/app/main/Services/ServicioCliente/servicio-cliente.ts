@@ -1,8 +1,9 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
-import { catchError, tap } from 'rxjs/operators';
+import { Observable, of, Subject, throwError } from 'rxjs';
+import { catchError, delay, tap } from 'rxjs/operators';
 import { Cliente } from 'app/main/Domain/Cliente';
+import { ClienteEvent } from 'app/main/Domain/ClienteEvent';
 
 @Injectable({
   providedIn: 'root'
@@ -15,7 +16,12 @@ export class ServicioCliente {
     'Accept': 'application/json'
   });
 
-    clientes: Cliente[] = [
+  private useMock = true;
+
+  private clienteSubject = new Subject<ClienteEvent>();
+  cliente$ = this.clienteSubject.asObservable();
+
+  clientesEjem: Cliente[] = [
     new Cliente(1001, 'Ana', 'Gómez', 'Calle 10 #20-30', '3101234567'),
     new Cliente(1002, 'Luis', 'Pérez', 'Avenida 5 #15-25', '3207654321'),
     new Cliente(1003, 'Sofía', 'Rodríguez', 'Carrera 7 #8-45', '3009876543'),
@@ -38,36 +44,80 @@ export class ServicioCliente {
     new Cliente(1020, 'Sergio', 'Herrera', 'Avenida 25 #3-35', '3253456789')
   ];
 
+  // ===================== GET ALL =====================
   getAll(): Observable<Cliente[]> {
-    return this.http.get<Cliente[]>(`${this.baseUrl}/`)
-      .pipe(
-        tap(data => console.log('Fetched clientes:', data)),
+    if (this.useMock) {
+      return of(this.clientesEjem).pipe(
+        delay(300),
+        tap(data => console.log('Fetched clientes (mock):', data))
+      );
+    } else {
+      return this.http.get<Cliente[]>(`${this.baseUrl}/`).pipe(
+        tap(data => console.log('Fetched clientes (API):', data)),
         catchError(this.handleError)
       );
+    }
   }
 
+  // ===================== GET BY ID =====================
   getById(cedula: number): Observable<Cliente> {
-    return this.http.get<Cliente>(`${this.baseUrl}/${cedula}`)
-      .pipe(catchError(this.handleError));
+    if (this.useMock) {
+      const cliente = this.clientesEjem.find(c => c.cedula === cedula);
+      return cliente ? of(cliente) : throwError(() => new Error('Cliente no encontrado'));
+    } else {
+      return this.http.get<Cliente>(`${this.baseUrl}/${cedula}`).pipe(
+        catchError(this.handleError)
+      );
+    }
   }
 
+  // ===================== CREATE =====================
   create(cliente: Cliente): Observable<Cliente> {
-    return this.http.post<Cliente>(`${this.baseUrl}/`, cliente, { headers: this.headers })
-      .pipe(catchError(this.handleError));
+    if (this.useMock) {
+      this.clientesEjem.push(cliente);
+      console.log(this.clientesEjem)
+      this.clienteSubject.next({ cliente }); // notifica creación
+      return of(cliente);
+    } else {
+      return this.http.post<Cliente>(`${this.baseUrl}/`, cliente, { headers: this.headers }).pipe(
+        tap(newCliente => this.clienteSubject.next({ cliente: newCliente })),
+        catchError(this.handleError)
+      );
+    }
   }
 
+  // ===================== UPDATE =====================
   update(cedula: number, cliente: Cliente): Observable<Cliente> {
-    return this.http.put<Cliente>(`${this.baseUrl}/${cedula}`, cliente, { headers: this.headers })
-      .pipe(catchError(this.handleError));
+    if (this.useMock) {
+      const index = this.clientesEjem.findIndex(c => c.cedula === cedula);
+      if (index !== -1) this.clientesEjem[index] = cliente;
+      this.clienteSubject.next({ cliente }); // notifica actualización
+      return of(cliente);
+    } else {
+      return this.http.put<Cliente>(`${this.baseUrl}/${cedula}`, cliente, { headers: this.headers }).pipe(
+        tap(updated => this.clienteSubject.next({ cliente: updated })),
+        catchError(this.handleError)
+      );
+    }
   }
 
+  // ===================== DELETE =====================
   delete(cedula: number): Observable<void> {
-    return this.http.delete<void>(`${this.baseUrl}/${cedula}`)
-      .pipe(catchError(this.handleError));
+    if (this.useMock) {
+      this.clientesEjem = this.clientesEjem.filter(c => c.cedula !== cedula);
+      this.clienteSubject.next({ deletedCedula: cedula }); // notifica eliminación
+      return of(void 0);
+    } else {
+      return this.http.delete<void>(`${this.baseUrl}/${cedula}`).pipe(
+        tap(() => this.clienteSubject.next({ deletedCedula: cedula })),
+        catchError(this.handleError)
+      );
+    }
   }
 
+  // ===================== ERROR HANDLER =====================
   private handleError(error: HttpErrorResponse): Observable<never> {
-    let errorMessage = error.error instanceof ErrorEvent
+    const errorMessage = error.error instanceof ErrorEvent
       ? `Error: ${error.error.message}`
       : `Server error (${error.status}): ${error.message}`;
     console.error(errorMessage);

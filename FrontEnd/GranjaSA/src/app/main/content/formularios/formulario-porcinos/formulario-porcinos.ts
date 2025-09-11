@@ -101,8 +101,6 @@ export class FormularioPorcinos implements OnInit {
           },
         });
       }
-
-
     } else {
       console.log('Formulario inválido');
     }
