@@ -15,7 +15,7 @@ export class DialogoEditar {
   
   constructor(private dialogRef: MatDialogRef<DialogoEditar>) {}
 
-  onPorcinoEditado(cliente: Cliente) {
+  onClienteEditado(cliente: Cliente) {
     console.log('Porcino editado recibido en el diálogo:', cliente);
     this.dialogRef.close(cliente)
   }

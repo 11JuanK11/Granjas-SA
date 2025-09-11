@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, inject, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, inject, OnInit, ViewChild} from '@angular/core';
 import {MatPaginator, MatPaginatorModule} from '@angular/material/paginator';
 import {MatSort, MatSortModule} from '@angular/material/sort';
 import {MatTableDataSource, MatTableModule} from '@angular/material/table';
@@ -6,27 +6,60 @@ import {MatInputModule} from '@angular/material/input';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {Cliente} from '../../Domain/Cliente';
 import { ServicioCliente } from 'app/main/Services/ServicioCliente/servicio-cliente';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { DialogoIngresar } from '../dialogos/dialogo-clientes/dialogo-ingresar/dialogo-ingresar';
+import { DialogoEditar } from '../dialogos/dialogo-clientes/dialogo-editar/dialogo-editar';
+import { DialogoEliminar } from '../dialogos/dialogo-clientes/dialogo-eliminar/dialogo-eliminar';
 
 
 @Component({
   selector: 'app-clientes',
-  imports: [MatFormFieldModule, MatInputModule, MatTableModule, MatSortModule, MatPaginatorModule],
+  imports: [MatFormFieldModule, MatInputModule, MatTableModule, MatSortModule, MatPaginatorModule, MatIconModule, MatButtonModule, MatTooltipModule, MatDialogModule],
   templateUrl: './clientes.html',
   styleUrl: './clientes.scss'
 })
-export class Clientes implements AfterViewInit {
-  displayedColumns: string[] = ['Cedula', 'Nombres', 'Apellidos', 'Direccion', 'Telefono'];
+export class Clientes implements OnInit, AfterViewInit {
+  displayedColumns: string[] = ['Cedula', 'Nombres', 'Apellidos', 'Direccion', 'Telefono', 'Acciones'];
   dataSource: MatTableDataSource<Cliente>;
   servicioCliente = inject(ServicioCliente);
+  readonly dialog = inject(MatDialog);
+  clientes: Cliente[] = []
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
   constructor() {
-    const users = this.clientes;
+    this.servicioCliente.getAll().subscribe({
+      next: (clientes) => {
+        console.log("Lista de clientes:", clientes);
+        this.clientes = clientes;
+      },
+      error: (err) => console.error("Error:", err)
+    });
 
-    this.dataSource = new MatTableDataSource(users);
+    this.dataSource = new MatTableDataSource(this.clientes);
   }
+
+    ngOnInit() {
+      this.servicioCliente.getAll().subscribe(data => {
+        this.clientes = data;
+        this.dataSource.data = [...this.clientes];
+      });
+
+      this.servicioCliente.cliente$.subscribe(event => {
+      if (event.cliente) {
+        const index = this.clientes.findIndex(p => p.cedula === event.cliente!.cedula);
+        if (index !== -1) this.clientes[index] = event.cliente!;
+        else this.clientes.push(event.cliente!);
+      } else if (event.deletedCedula) {
+        this.clientes = this.clientes.filter(p => p.cedula !== event.deletedCedula);
+      }
+      this.dataSource.data = [...this.clientes];
+    });
+    }
 
   ngAfterViewInit() {
     this.dataSource.paginator = this.paginator;
@@ -53,28 +86,30 @@ export class Clientes implements AfterViewInit {
     }
   }
 
-  clientes: Cliente[] = [
-    new Cliente(1001, 'Ana', 'Gómez', 'Calle 10 #20-30', '3101234567'),
-    new Cliente(1002, 'Luis', 'Pérez', 'Avenida 5 #15-25', '3207654321'),
-    new Cliente(1003, 'Sofía', 'Rodríguez', 'Carrera 7 #8-45', '3009876543'),
-    new Cliente(1004, 'Javier', 'Díaz', 'Calle 25 #5-10', '3152345678'),
-    new Cliente(1005, 'Marta', 'Sánchez', 'Avenida 30 #1-50', '3188765432'),
-    new Cliente(1006, 'Carlos', 'López', 'Carrera 12 #100-20', '3015432109'),
-    new Cliente(1007, 'Laura', 'Martínez', 'Calle 50 #65-10', '3221122334'),
-    new Cliente(1008, 'Andrés', 'Hernández', 'Avenida 80 #3-75', '3139871234'),
-    new Cliente(1009, 'Isabel', 'García', 'Carrera 9 #15-90', '3055678901'),
-    new Cliente(1010, 'Diego', 'Torres', 'Calle 90 #45-10', '3167890123'),
-    new Cliente(1011, 'Valeria', 'Ruiz', 'Avenida 15 #5-55', '3213456789'),
-    new Cliente(1012, 'Pablo', 'Jiménez', 'Carrera 20 #12-30', '3049876543'),
-    new Cliente(1013, 'Camila', 'Morales', 'Calle 70 #80-15', '3192345678'),
-    new Cliente(1014, 'Ricardo', 'Castro', 'Avenida 6 #10-25', '3178765432'),
-    new Cliente(1015, 'Gabriela', 'Ramírez', 'Carrera 5 #40-80', '3025432109'),
-    new Cliente(1016, 'Daniel', 'Silva', 'Calle 30 #50-10', '3231122334'),
-    new Cliente(1017, 'Natalia', 'Vargas', 'Avenida 45 #2-70', '3119871234'),
-    new Cliente(1018, 'Felipe', 'Ortiz', 'Carrera 8 #15-60', '3035678901'),
-    new Cliente(1019, 'Lucía', 'Guzmán', 'Calle 60 #20-50', '3147890123'),
-    new Cliente(1020, 'Sergio', 'Herrera', 'Avenida 25 #3-35', '3253456789')
-  ];
+    abrirAgregar() {
+      const dialogRef = this.dialog.open(DialogoIngresar);
+      dialogRef.afterClosed().subscribe(result => {
+        console.log(`Dialog result: ${result}`);
+      });
+    }
+  
+    abrirEditar(cedula: number) {
+      const dialogRef = this.dialog.open(DialogoEditar);
+      console.log("cedula clientes:", cedula)
+      dialogRef.componentInstance.clienteData = this.clientes.filter(c => c.cedula === cedula)[0];
+      dialogRef.afterClosed().subscribe(result => {
+        console.log(`Dialog result: ${result}`);
+      });
+    }
+  
+    abrirEliminar(cedula: number) {
+      const dialogRef = this.dialog.open(DialogoEliminar);
+  
+      dialogRef.componentInstance.cedula = cedula;
+      dialogRef.afterClosed().subscribe(result => {
+        console.log(`Dialog result: ${result}`);
+      });
+    }
 }
 
 

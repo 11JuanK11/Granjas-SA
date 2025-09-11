@@ -1,23 +1,23 @@
 import { Component } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
-import { FormularioPorcinos } from '../../../formularios/formulario-porcinos/formulario-porcinos';
-import { Porcino } from 'app/main/Domain/Porcino';
+import { Cliente } from 'app/main/Domain/Cliente';
+import { FormularioClientes } from 'app/main/content/formularios/formulario-clientes/formulario-clientes';
 
 @Component({
   selector: 'app-dialogo-ingresar-cliente',
-  imports: [MatButtonModule, MatDialogModule, FormularioPorcinos],
+  imports: [MatButtonModule, MatDialogModule, FormularioClientes],
   templateUrl: './dialogo-ingresar.html',
   styleUrl: './dialogo-ingresar.scss'
 })
 export class DialogoIngresar {
-  porcinoData: Porcino | null = null;
+  clienteData: Cliente | null = null;
   
   constructor(private dialogRef: MatDialogRef<DialogoIngresar>) {}
 
-  onPorcinoEditado(porcino: Porcino) {
-    console.log('Porcino editado recibido en el diálogo:', porcino);
-    this.dialogRef.close(porcino)
+  onClienteEditado(Cliente: Cliente) {
+    console.log('Cliente editado recibido en el diálogo:', Cliente);
+    this.dialogRef.close(Cliente)
   }
 }
   

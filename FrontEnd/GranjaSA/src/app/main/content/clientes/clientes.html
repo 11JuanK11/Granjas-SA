@@ -34,6 +34,18 @@
         <td mat-cell *matCellDef="let row"> {{row.telefono}} </td>
         </ng-container>
 
+        <ng-container matColumnDef="Acciones">
+            <th mat-header-cell *matHeaderCellDef> Acciones </th>
+            <td mat-cell *matCellDef="let row">
+                <button matIconButton class="example-icon" matTooltip="Editar" (click)="abrirEditar(row.cedula)">
+                    <mat-icon style="color: #87CEEB;">edit</mat-icon>
+                </button>
+                <button matIconButton class="example-icon" matTooltip="Eliminar" (click)="abrirEliminar(row.cedula)">
+                    <mat-icon style="color: #E07B6D;">delete</mat-icon>
+                </button>
+            </td>
+        </ng-container>
+
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
         <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
 
@@ -42,4 +54,8 @@
         </tr>
     </table>
     <mat-paginator [pageSizeOptions]="[5, 10]" aria-label="Select page of users"></mat-paginator>
+
+    <button matFab aria-label="Example icon button with a delete icon" matTooltip="Agregar Porcino" (click)="abrirAgregar()">
+        <mat-icon>add</mat-icon>
+    </button>
 </div>

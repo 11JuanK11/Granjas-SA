@@ -1,7 +1,7 @@
 import { Component, inject, Input } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';
-import { ServicioPorcino } from 'app/main/Services/ServicioPorcino/servicio-porcino';
+import { ServicioCliente } from 'app/main/Services/ServicioCliente/servicio-cliente';
 
 @Component({
   selector: 'app-dialogo-eliminar-cliente',
@@ -10,14 +10,14 @@ import { ServicioPorcino } from 'app/main/Services/ServicioPorcino/servicio-porc
   styleUrl: './dialogo-eliminar.scss'
 })
 export class DialogoEliminar {
-  @Input() porcinoId: string = '';
-  servicioPorcino = inject(ServicioPorcino);
+  @Input() cedula: number = -1;
+  servicioCliente = inject(ServicioCliente);
 
-  eliminarPorcino(porcinoId: string){
-    console.log(`id del porcino a eliminar ${porcinoId}`);
-    this.servicioPorcino.delete(porcinoId).subscribe({
+  eliminarCliente(cedula: number){
+    console.log(`cedula a eliminar ${cedula}`);
+    this.servicioCliente.delete(cedula).subscribe({
         next: () => {
-          console.log('Porcino eliminado', porcinoId);
+          console.log('cliente eliminado', cedula);
         },
         error(err) {
             console.error(err);
