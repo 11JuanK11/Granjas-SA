@@ -16,7 +16,7 @@ import lombok.Data;
 public class Cliente implements Serializable {
 
     @Id
-    private int cedula;
+    private Integer cedula;
 
     @NotNull(message = "Los nombres son obligatorios")
     @Column(nullable = false)
