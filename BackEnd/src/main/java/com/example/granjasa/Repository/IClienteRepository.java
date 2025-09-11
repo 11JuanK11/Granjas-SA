@@ -7,5 +7,5 @@ import com.example.granjasa.Entity.Cliente;
 
 @Repository
 public interface IClienteRepository extends JpaRepository<Cliente, Integer> {
-    
+    public Cliente findById(int Id);
 }

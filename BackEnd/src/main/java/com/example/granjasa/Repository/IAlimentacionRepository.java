@@ -7,5 +7,5 @@ import com.example.granjasa.Entity.Alimentacion;
 
 @Repository
 public interface IAlimentacionRepository extends JpaRepository<Alimentacion, Integer> {
-    
+    public Alimentacion findById(int id);
 }
