@@ -16,7 +16,6 @@ import lombok.Data;
 public class Cliente implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int cedula;
 
     @NotNull(message = "Los nombres son obligatorios")
