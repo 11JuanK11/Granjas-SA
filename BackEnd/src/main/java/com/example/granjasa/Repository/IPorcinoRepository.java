@@ -10,4 +10,5 @@ import com.example.granjasa.Entity.Porcino;
 @Repository
 public interface IPorcinoRepository extends JpaRepository<Porcino, String> {
     public Optional<Porcino> findById(String idPorcino);
+    public void deleteById(String idPorcino);
 }
