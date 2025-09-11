@@ -5,20 +5,14 @@ import {MatTableDataSource, MatTableModule} from '@angular/material/table';
 import {MatInputModule} from '@angular/material/input';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {Porcino} from '../../Domain/Porcino';
-import {Cliente} from '../../Domain/Cliente';
-import {RazaPorcino} from '../../Domain/RazaPorcino';
-import {Alimentacion} from '../../Domain/Alimentacion';
 import { ServicioPorcino } from 'app/main/Services/ServicioPorcino/servicio-porcino';
-import { catchError, tap } from 'rxjs';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { DialogoEditar } from '../dialogos/dialogo-editar/dialogo-editar';
-import { DialogoEliminar } from '../dialogos/dialogo-eliminar/dialogo-eliminar';
-import { DialogoIngresar } from '../dialogos/dialogo-ingresar/dialogo-ingresar';
-
-
+import { DialogoEliminar } from '../dialogos/dialogo-porcinos/dialogo-eliminar/dialogo-eliminar';
+import { DialogoEditar } from '../dialogos/dialogo-porcinos/dialogo-editar/dialogo-editar';
+import { DialogoIngresar } from '../dialogos/dialogo-porcinos/dialogo-ingresar/dialogo-ingresar';
 
 @Component({
   selector: 'app-porcinos',
