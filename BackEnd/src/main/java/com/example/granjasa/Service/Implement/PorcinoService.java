@@ -86,8 +86,7 @@ public class PorcinoService implements IPorcinoService{
             porcino.getAlimentacion());
             porcinoExistente.get().setAlimentacion(alimentacionActualizada);
 
-            if (!porcino.getCliente().equals(null))
-                porcinoExistente.get().setCliente(porcino.getCliente());
+            porcinoExistente.get().setCliente(porcino.getCliente());
 
             return porcinoRepository.save(porcinoExistente.get());
         }
