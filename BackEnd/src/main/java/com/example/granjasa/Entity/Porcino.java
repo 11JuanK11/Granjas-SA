@@ -29,7 +29,7 @@ public class Porcino implements Serializable{
     private Integer peso;
 
     @ManyToOne
-    @JoinColumn(name = "cliente_id", nullable = false)
+    @JoinColumn(name = "cliente_id", nullable = true)
     @JsonIgnore
     private Cliente cliente;
 

@@ -33,7 +33,7 @@ public class PorcinoService implements IPorcinoService{
     private IAlimentacionService alimentacionService;
 
     @Override
-    public Porcino crearPorcino(Porcino porcino, int idCliente) throws EntityNotFoundException {
+    public Porcino crearPorcino(Porcino porcino) throws EntityNotFoundException {
         if (porcino == null)
             throw new IllegalArgumentException("El porcino debe tener datos.");
 
@@ -44,7 +44,7 @@ public class PorcinoService implements IPorcinoService{
     }
 
     @Override
-    public List<Porcino> obtenerPorcinos(int idCliente) throws EntityNotFoundException {
+    public List<Porcino> obtenerPorcinosPorCliente(int idCliente) throws EntityNotFoundException {
         Cliente cliente = clienteRepository.findById(idCliente);
         if (cliente == null) {
             throw new EntityNotFoundException("No se encontró el cliente con ID: " + idCliente);
@@ -54,6 +54,11 @@ public class PorcinoService implements IPorcinoService{
             throw new EntityNotFoundException("No se encontraron porcinos para el cliente con ID: " + idCliente);
         }
         return porcinos;
+    }
+
+    @Override
+    public List<Porcino> obtenerPorcinos() throws EntityNotFoundException {
+        return porcinoRepository.findAll();
     }
 
     @Override
@@ -108,4 +113,6 @@ public class PorcinoService implements IPorcinoService{
             throw new IllegalArgumentException("El porcino ya existe.");
         }
     }
+
+    
 }
