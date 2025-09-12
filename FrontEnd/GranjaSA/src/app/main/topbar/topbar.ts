@@ -35,7 +35,11 @@ export class Topbar {
     const file = input.files[0];
     this.servicoExcel.importFromExcel(file).then(data => {
       console.log('Datos importados:', data.porcinos);
-      this.servicioPorcino.createPorcinos(data.porcinos)
+      this.servicioPorcino.createPorcinos(data.porcinos).subscribe({
+        next: resp => console.log('Respuesta:', resp),
+        error: err => console.error('Error:', err)
+      });
+
     }).catch(err => {
       console.error('Error al importar Excel:', err);
     });

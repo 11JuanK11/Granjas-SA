@@ -24,58 +24,7 @@ export class ServicioCliente {
   private clienteSubject = new Subject<ClienteEvent>();
   cliente$ = this.clienteSubject.asObservable();
 
-clientesEjem: Cliente[] = [
-  new Cliente(
-    1001,
-    "Ana",
-    "Gómez",
-    "Calle 10 #20-30",
-    "3101234567",
-    [
-      new Porcino(
-        "P-001",
-        RazaPorcino.YORK,
-        2,
-        120,
-        new Alimentacion(1, "Concentrado Premium", "2kg/día"),
-        null // luego puedes asignar cliente si necesitas referencia inversa
-      ),
-      new Porcino(
-        "P-002",
-        RazaPorcino.DUROC,
-        1,
-        95,
-        new Alimentacion(2, "Maíz y soya", "3kg/día"),
-        null
-      )
-    ]
-  ),
-  new Cliente(
-    1002,
-    "Luis",
-    "Pérez",
-    "Avenida 5 #15-25",
-    "3207654321",
-    [
-      new Porcino(
-        "P-003",
-        RazaPorcino.HAMP,
-        3,
-        150,
-        new Alimentacion(3, "Balanceado porcino", "2.5kg/día"),
-        null
-      )
-    ]
-  ),
-  new Cliente(
-    1003,
-    "Sofía",
-    "Rodríguez",
-    "Carrera 7 #8-45",
-    "3009876543",
-    []
-  )
-];
+clientesEjem: Cliente[] = [];
 
   // ===================== GET ALL ===================== bien
   getAll(): Observable<Cliente[]> {
