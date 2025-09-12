@@ -1,6 +1,7 @@
 package com.example.granjasa.Service.Implement;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,7 +28,7 @@ public class ClienteService implements IClienteService{
     }
 
     @Override
-    public List<Cliente> obtenerClientes(int idCliente) throws EntityNotFoundException {
+    public List<Cliente> obtenerClientes() throws EntityNotFoundException {
         List<Cliente> clientes = clienteRepository.findAll();
 
         if (clientes.isEmpty()) {
@@ -37,32 +38,32 @@ public class ClienteService implements IClienteService{
     }
 
     @Override
-    public Cliente obtenerClientePorId(int idCliente) throws EntityNotFoundException {
-        Cliente cliente = clienteRepository.findById(idCliente);
+    public Cliente obtenerClientePorId(Integer idCliente) throws EntityNotFoundException {
+        Optional<Cliente> cliente = clienteRepository.findById(idCliente);
 
-        if (cliente == null) {
+        if (!cliente.isPresent()) {
             throw new EntityNotFoundException("No se encontró el cliente con cédula: " + idCliente);
         }
-        return cliente;
+        return cliente.get();
     }
 
     @Override
-    public Cliente actualizarCliente(int idCliente, Cliente cliente) throws EntityNotFoundException {
-        Cliente clienteExistente = clienteRepository.findById(idCliente);
+    public Cliente actualizarCliente(Integer idCliente, Cliente cliente) throws EntityNotFoundException {
+        Optional<Cliente> clienteExistente = clienteRepository.findById(idCliente);
 
-        if (clienteExistente == null) {
+        if (!clienteExistente.isPresent()) {
             throw new EntityNotFoundException("No se encontró el cliente con cédula: " + idCliente);
         } else {
-            clienteExistente.setNombres(cliente.getNombres());
-            clienteExistente.setApellidos(cliente.getApellidos());
-            clienteExistente.setDireccion(cliente.getDireccion());
-            clienteExistente.setTelefono(cliente.getTelefono());
-            return clienteRepository.save(clienteExistente);
+            clienteExistente.get().setNombres(cliente.getNombres());
+            clienteExistente.get().setApellidos(cliente.getApellidos());
+            clienteExistente.get().setDireccion(cliente.getDireccion());
+            clienteExistente.get().setTelefono(cliente.getTelefono());
+            return clienteRepository.save(clienteExistente.get());
         }
     }
 
     @Override
-    public void eliminarCliente(int idCliente) throws EntityNotFoundException {
+    public void eliminarCliente(Integer idCliente) throws EntityNotFoundException {
         if (!clienteRepository.existsById(idCliente)) {
             throw new EntityNotFoundException("No se encontró el cliente con cédula: " + idCliente);
         } else {
@@ -70,7 +71,7 @@ public class ClienteService implements IClienteService{
         }
     }
 
-    public void validarClienteExistente(int idCliente) throws IllegalArgumentException {
+    public void validarClienteExistente(Integer idCliente) throws IllegalArgumentException {
         boolean clienteExiste = clienteRepository.existsById(idCliente);
 
         if (clienteExiste) {
