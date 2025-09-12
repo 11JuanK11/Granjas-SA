@@ -1,7 +1,9 @@
 package com.example.granjasa.Controller;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -66,7 +68,7 @@ public class PorcinoController {
         return new ResponseEntity<>(porcinos, HttpStatus.OK);
     }
 
-    @PutMapping("/porcino")
+    @PutMapping("/")
     public ResponseEntity<?> actualizar(@RequestBody Porcino porcino) {
         try {
             Porcino porcinoActualizado = porcinoService.actualizarPorcino(porcino.getId(), porcino);
@@ -80,7 +82,9 @@ public class PorcinoController {
     public ResponseEntity<?> eliminar(@PathVariable String idPorcino) {
         try {
             porcinoService.eliminarPorcino(idPorcino);
-            return ResponseEntity.ok("Porcino eliminado con éxito");
+            Map<String, String> respuesta = new HashMap<>();
+            respuesta.put("mensaje", "Porcino eliminado con éxito" );
+            return ResponseEntity.ok(respuesta);
         } catch (Exception e) {
             return ResponseEntity.status(404).body(e.getMessage());
         }
