@@ -21,14 +21,14 @@ import com.example.granjasa.Service.Implement.PorcinoService;
 
 @CrossOrigin(origins = "http://localhost:4200")
 @RestController
-@RequestMapping("/porcino/")
+@RequestMapping("/porcino")
 public class PorcinoController {
     
     @Autowired
     public PorcinoService porcinoService;
 
-    @PostMapping("/porcinosNuevos")
-    public ResponseEntity<?> insertar(@RequestBody List<Porcino> porcinos) {
+    @PostMapping("/lista")
+    public ResponseEntity<?> insertarLista(@RequestBody List<Porcino> porcinos) {
         try {
             if (!porcinos.isEmpty()){
                 List<Porcino> porcinosSave = new ArrayList<>();
@@ -45,14 +45,29 @@ public class PorcinoController {
         }
     }
 
+    @PostMapping("/")
+    public ResponseEntity<?> insertarSolo(@RequestBody Porcino porcino) {
+        try {
+            if (porcino != null){
+                Porcino porcinoSave = porcinoService.crearPorcino(porcino);
+                return new ResponseEntity<>(porcinoSave, HttpStatus.CREATED);
+            } else {
+                return new ResponseEntity<>("La lista de porcinos no puede estar vacía", HttpStatus.BAD_REQUEST);
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return new ResponseEntity<>("Se produjo un error al registrar." + ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     @GetMapping("/")
-    public ResponseEntity<List<Porcino>> obtenerPorcinos() {
+    public ResponseEntity<List<Porcino>> obtener() {
         List<Porcino> porcinos = porcinoService.obtenerPorcinos();
         return new ResponseEntity<>(porcinos, HttpStatus.OK);
     }
 
     @PutMapping("/porcino")
-    public ResponseEntity<?> updatePet(@RequestBody Porcino porcino) {
+    public ResponseEntity<?> actualizar(@RequestBody Porcino porcino) {
         try {
             Porcino porcinoActualizado = porcinoService.actualizarPorcino(porcino.getId(), porcino);
             return ResponseEntity.ok(porcinoActualizado);
