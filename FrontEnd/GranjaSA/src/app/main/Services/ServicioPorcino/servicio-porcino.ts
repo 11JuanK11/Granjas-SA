@@ -12,13 +12,13 @@ import { catchError, delay, Observable, of, Subject, tap, throwError } from 'rxj
 })
 export class ServicioPorcino {
   private http = inject(HttpClient);
-  private baseUrl = 'http://localhost:8080/porcinos';
+  private baseUrl = 'http://localhost:8080/porcino';
   private headers = new HttpHeaders({
     'Content-Type': 'application/json',
     'Accept': 'application/json'
   });
 
-  private useMock = true;
+  private useMock = false;
 
   private porcinoSubject = new Subject<PorcinoEvent>();
   porcino$ = this.porcinoSubject.asObservable();
@@ -47,6 +47,7 @@ export class ServicioPorcino {
     new Porcino('M20', RazaPorcino.HAMP, 9, 93, new Alimentacion(2, 'Dieta de crecimiento', '1.9kg/día'), undefined)
 ];
 
+//
   getAll(): Observable<Porcino[]> {
     if (this.useMock) {
       return of(this.porcinosEjem).pipe(
@@ -94,7 +95,7 @@ createPorcinos(porcinos: Porcino[]): Observable<Porcino[]> {
     this.porcinoSubject.next({ porcinos }); // notifica creación múltiple
     return of(porcinos);
   } else {
-    return this.http.post<Porcino[]>(`${this.baseUrl}/`, porcinos, { headers: this.headers })
+    return this.http.post<Porcino[]>(`${this.baseUrl}/importar`, porcinos, { headers: this.headers })
       .pipe(
         tap(newPorcinos => this.porcinoSubject.next({ porcinos: newPorcinos })), 
         catchError(this.handleError)

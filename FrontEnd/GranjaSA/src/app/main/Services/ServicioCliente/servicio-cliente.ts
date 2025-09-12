@@ -13,13 +13,13 @@ import { Alimentacion } from 'app/main/Domain/Alimentacion';
 })
 export class ServicioCliente {
   private http = inject(HttpClient);
-  private baseUrl = 'http://localhost:8080/clientes';
+  private baseUrl = 'http://localhost:8080/cliente';
   private headers = new HttpHeaders({
     'Content-Type': 'application/json',
     'Accept': 'application/json'
   });
 
-  private useMock = true;
+  private useMock = false;
 
   private clienteSubject = new Subject<ClienteEvent>();
   cliente$ = this.clienteSubject.asObservable();
@@ -77,7 +77,7 @@ clientesEjem: Cliente[] = [
   )
 ];
 
-  // ===================== GET ALL =====================
+  // ===================== GET ALL ===================== bien
   getAll(): Observable<Cliente[]> {
     if (this.useMock) {
       return of(this.clientesEjem).pipe(
@@ -92,7 +92,7 @@ clientesEjem: Cliente[] = [
     }
   }
 
-  // ===================== GET BY ID =====================
+  // ===================== GET BY ID ===================== no necesario
   getById(cedula: number): Observable<Cliente> {
     if (this.useMock) {
       const cliente = this.clientesEjem.find(c => c.cedula === cedula);
@@ -104,7 +104,7 @@ clientesEjem: Cliente[] = [
     }
   }
 
-  // ===================== CREATE =====================
+  // ===================== CREATE ===================== bien
   create(cliente: Cliente): Observable<Cliente> {
     if (this.useMock) {
       this.clientesEjem.push(cliente);
@@ -119,22 +119,20 @@ clientesEjem: Cliente[] = [
     }
   }
 
-  // ===================== UPDATE =====================
-  update(cedula: number, cliente: Cliente): Observable<Cliente> {
+  // ===================== UPDATE ===================== bien
+  update(cliente: Cliente): Observable<Cliente> { 
     if (this.useMock) {
-      const index = this.clientesEjem.findIndex(c => c.cedula === cedula);
-      if (index !== -1) this.clientesEjem[index] = cliente;
       this.clienteSubject.next({ cliente }); // notifica actualización
       return of(cliente);
     } else {
-      return this.http.put<Cliente>(`${this.baseUrl}/${cedula}`, cliente, { headers: this.headers }).pipe(
+      return this.http.put<Cliente>(`${this.baseUrl}/`, cliente, { headers: this.headers }).pipe(
         tap(updated => this.clienteSubject.next({ cliente: updated })),
         catchError(this.handleError)
       );
     }
   }
 
-  // ===================== DELETE =====================
+  // ===================== DELETE ===================== bien
   delete(cedula: number): Observable<void> {
     if (this.useMock) {
       this.clientesEjem = this.clientesEjem.filter(c => c.cedula !== cedula);
