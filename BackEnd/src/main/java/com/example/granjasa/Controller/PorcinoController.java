@@ -61,13 +61,13 @@ public class PorcinoController {
     }
 
     @GetMapping("/")
-    public ResponseEntity<List<Porcino>> obtenerPorcinos() {
+    public ResponseEntity<List<Porcino>> obtener() {
         List<Porcino> porcinos = porcinoService.obtenerPorcinos();
         return new ResponseEntity<>(porcinos, HttpStatus.OK);
     }
 
     @PutMapping("/porcino")
-    public ResponseEntity<?> updatePet(@RequestBody Porcino porcino) {
+    public ResponseEntity<?> actualizar(@RequestBody Porcino porcino) {
         try {
             Porcino porcinoActualizado = porcinoService.actualizarPorcino(porcino.getId(), porcino);
             return ResponseEntity.ok(porcinoActualizado);

@@ -38,13 +38,13 @@ public class ClienteController {
     }
 
     @GetMapping("/")
-    public ResponseEntity<List<Cliente>> obtenerCliente() {
+    public ResponseEntity<List<Cliente>> obtener() {
         List<Cliente> clientes = clienteService.obtenerClientes();
         return new ResponseEntity<>(clientes, HttpStatus.OK);
     }
 
     @PutMapping("/cliente")
-    public ResponseEntity<?> actualizarAcutalizar(@RequestBody Cliente cliente) {
+    public ResponseEntity<?> actualizar(@RequestBody Cliente cliente) {
         try {
             Cliente clienteActualizado = clienteService.actualizarCliente(cliente.getCedula(), cliente);
             return ResponseEntity.ok(clienteActualizado);
