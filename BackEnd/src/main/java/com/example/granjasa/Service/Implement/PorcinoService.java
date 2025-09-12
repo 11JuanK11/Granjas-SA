@@ -45,11 +45,11 @@ public class PorcinoService implements IPorcinoService{
 
     @Override
     public List<Porcino> obtenerPorcinosPorCliente(int idCliente) throws EntityNotFoundException {
-        Cliente cliente = clienteRepository.findById(idCliente);
-        if (cliente == null) {
+        Optional<Cliente> cliente = clienteRepository.findById(idCliente);
+        if (!cliente.isPresent()) {
             throw new EntityNotFoundException("No se encontró el cliente con ID: " + idCliente);
         }
-        List<Porcino> porcinos = cliente.getPorcinos();
+        List<Porcino> porcinos = cliente.get().getPorcinos();
         if (porcinos.isEmpty()) {
             throw new EntityNotFoundException("No se encontraron porcinos para el cliente con ID: " + idCliente);
         }
