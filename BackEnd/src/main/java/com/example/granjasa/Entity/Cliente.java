@@ -16,8 +16,7 @@ import lombok.Data;
 public class Cliente implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int cedula;
+    private Integer cedula;
 
     @NotNull(message = "Los nombres son obligatorios")
     @Column(nullable = false)
@@ -37,6 +36,6 @@ public class Cliente implements Serializable {
 
     @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
-    private List<Porcino> porcino = new ArrayList<>();
+    private List<Porcino> porcinos = new ArrayList<>();
     
 }
