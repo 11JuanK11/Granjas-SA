@@ -2,8 +2,6 @@ package com.example.granjasa.Entity;
 
 import java.io.Serializable;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
@@ -30,7 +28,6 @@ public class Porcino implements Serializable{
 
     @ManyToOne
     @JoinColumn(name = "cliente_id", nullable = true)
-    @JsonIgnore
     private Cliente cliente;
 
     @OneToOne(cascade = CascadeType.ALL)

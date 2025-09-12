@@ -20,13 +20,13 @@ import com.example.granjasa.Service.Implement.ClienteService;
 
 @CrossOrigin(origins = "http://localhost:4200")
 @RestController
-@RequestMapping("/cliente/")
+@RequestMapping("/cliente")
 public class ClienteController {
     
     @Autowired
     public ClienteService clienteService;
 
-    @PostMapping("/clienteNuevo")
+    @PostMapping("/")
     public ResponseEntity<?> insertar(@RequestBody Cliente clienteNuevo) {
         try {
             Cliente cliente = clienteService.crearCliente(clienteNuevo);
