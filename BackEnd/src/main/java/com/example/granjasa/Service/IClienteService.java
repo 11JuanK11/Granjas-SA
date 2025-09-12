@@ -8,8 +8,8 @@ import jakarta.persistence.EntityNotFoundException;
 
 public interface IClienteService {
     public Cliente crearCliente(Cliente cliente) throws EntityNotFoundException;
-    public List<Cliente> obtenerClientes(int idCliente) throws EntityNotFoundException;
-    public Cliente obtenerClientePorId(int idCliente) throws EntityNotFoundException;
-    public Cliente actualizarCliente(int idCliente, Cliente cliente) throws EntityNotFoundException;
-    public void eliminarCliente(int idCliente) throws EntityNotFoundException;
+    public List<Cliente> obtenerClientes() throws EntityNotFoundException;
+    public Cliente obtenerClientePorId(Integer idCliente) throws EntityNotFoundException;
+    public Cliente actualizarCliente(Integer idCliente, Cliente cliente) throws EntityNotFoundException;
+    public void eliminarCliente(Integer idCliente) throws EntityNotFoundException;
 }

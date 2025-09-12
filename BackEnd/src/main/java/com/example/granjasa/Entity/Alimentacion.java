@@ -13,7 +13,7 @@ public class Alimentacion implements Serializable {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
 
     @NotNull(message = "La descripción es obligatoria")
     @Column(nullable = false)
