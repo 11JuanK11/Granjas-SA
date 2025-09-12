@@ -13,6 +13,7 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { DialogoIngresar } from '../dialogos/dialogo-clientes/dialogo-ingresar/dialogo-ingresar';
 import { DialogoEditar } from '../dialogos/dialogo-clientes/dialogo-editar/dialogo-editar';
 import { DialogoEliminar } from '../dialogos/dialogo-clientes/dialogo-eliminar/dialogo-eliminar';
+import { ServicioPorcino } from 'app/main/Services/ServicioPorcino/servicio-porcino';
 
 
 @Component({
@@ -25,8 +26,9 @@ export class Clientes implements OnInit, AfterViewInit {
   displayedColumns: string[] = ['Cedula', 'Nombres', 'Apellidos', 'Direccion', 'Telefono', 'Acciones'];
   dataSource: MatTableDataSource<Cliente>;
   servicioCliente = inject(ServicioCliente);
+  servicioPorcino = inject(ServicioPorcino)
   readonly dialog = inject(MatDialog);
-  clientes: Cliente[] = []
+  clientes: Cliente[] = [];
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
@@ -50,15 +52,24 @@ export class Clientes implements OnInit, AfterViewInit {
       });
 
       this.servicioCliente.cliente$.subscribe(event => {
-      if (event.cliente) {
-        const index = this.clientes.findIndex(p => p.cedula === event.cliente!.cedula);
-        if (index !== -1) this.clientes[index] = event.cliente!;
-        else this.clientes.push(event.cliente!);
-      } else if (event.deletedCedula) {
-        this.clientes = this.clientes.filter(p => p.cedula !== event.deletedCedula);
-      }
-      this.dataSource.data = [...this.clientes];
-    });
+        if (event.cliente) {
+          const index = this.clientes.findIndex(p => p.cedula === event.cliente!.cedula);
+          if (index !== -1) this.clientes[index] = event.cliente!;
+          else this.clientes.push(event.cliente!);
+        } else if (event.deletedCedula) {
+          this.clientes = this.clientes.filter(p => p.cedula !== event.deletedCedula);
+        }
+        this.dataSource.data = [...this.clientes];
+      });
+
+      this.servicioPorcino.porcino$.subscribe(event => {
+        if(event.porcinos){
+          this.servicioCliente.getAll().subscribe(data => {
+            this.clientes = data;
+            this.dataSource.data = [...this.clientes];
+          });
+        }
+      });
     }
 
   ngAfterViewInit() {
