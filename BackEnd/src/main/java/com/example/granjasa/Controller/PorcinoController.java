@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.granjasa.Entity.Porcino;
+import com.example.granjasa.Service.Implement.ClienteService;
 import com.example.granjasa.Service.Implement.PorcinoService;
 
 @CrossOrigin(origins = "http://localhost:4200")
@@ -29,13 +30,18 @@ public class PorcinoController {
     @Autowired
     public PorcinoService porcinoService;
 
+    @Autowired
+    public ClienteService clientService;
+
     @PostMapping("/lista")
     public ResponseEntity<?> insertarLista(@RequestBody List<Porcino> porcinos) {
         try {
             if (!porcinos.isEmpty()){
                 List<Porcino> porcinosSave = new ArrayList<>();
                 for (Porcino porcino : porcinos) {
+                    clientService.crearCliente(porcino.getCliente());
                     porcinosSave.add(porcinoService.crearPorcino(porcino));
+                    
                 }
                 return new ResponseEntity<>(porcinosSave, HttpStatus.CREATED);
             } else {
