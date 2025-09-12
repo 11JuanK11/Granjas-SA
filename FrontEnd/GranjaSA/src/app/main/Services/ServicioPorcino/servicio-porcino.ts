@@ -87,6 +87,22 @@ create(porcino: Porcino): Observable<Porcino> {
   }
 }
 
+createPorcinos(porcinos: Porcino[]): Observable<Porcino[]> {
+  if (this.useMock) {
+    this.porcinosEjem = this.porcinosEjem.concat(porcinos);
+    console.log(this.porcinosEjem);
+    this.porcinoSubject.next({ porcinos }); // notifica creación múltiple
+    return of(porcinos);
+  } else {
+    return this.http.post<Porcino[]>(`${this.baseUrl}/`, porcinos, { headers: this.headers })
+      .pipe(
+        tap(newPorcinos => this.porcinoSubject.next({ porcinos: newPorcinos })), 
+        catchError(this.handleError)
+      );
+  }
+}
+
+
 update(id: string, porcino: Porcino): Observable<Porcino> {
   if (this.useMock) {
     const index = this.porcinosEjem.findIndex(p => p.id === id);

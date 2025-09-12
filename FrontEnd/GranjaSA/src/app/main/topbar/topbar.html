@@ -9,10 +9,18 @@
 
     <span class="example-spacer"></span>
     
-    <button style="margin: 4px;" matIconButton class="example-icon favorite-icon" matTooltip="Subir archivo de excel">
-        <mat-icon>upload</mat-icon>
+    <button style="margin: 4px;" 
+            mat-icon-button 
+            class="example-icon favorite-icon" 
+            matTooltip="Importar archivo de excel" 
+            (click)="fileInput.click()">
+    <mat-icon>download</mat-icon>
     </button>
-    <button  style="margin: 4px;" matIconButton class="example-icon" matTooltip="Descargar archivo de excel">
-        <mat-icon>download</mat-icon>
-    </button>
+
+    <input #fileInput 
+        type="file" 
+        style="display: none;" 
+        (change)="importar($event)" />
+
+
 </mat-toolbar>

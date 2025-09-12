@@ -57,17 +57,27 @@ export class Porcinos implements OnInit, AfterViewInit{
         this.dataSource.data = [...this.porcinos];
       });
 
-    this.servicioPorcino.porcino$.subscribe(event => {
-      if (event.porcino) {
-        const index = this.porcinos.findIndex(p => p.id === event.porcino!.id);
-        if (index !== -1) this.porcinos[index] = event.porcino!;
-        else this.porcinos.push(event.porcino!);
-      } else if (event.deletedId) {
-        this.porcinos = this.porcinos.filter(p => p.id !== event.deletedId);
-      }
-      this.dataSource.data = [...this.porcinos];
-    });
-
+      this.servicioPorcino.porcino$.subscribe(event => {
+        if (event.porcino) {
+          const index = this.porcinos.findIndex(p => p.id === event.porcino!.id);
+          if (index !== -1) this.porcinos[index] = event.porcino!;
+          else this.porcinos.push(event.porcino!);
+        } 
+        else if (event.porcinos) {
+          for (const porcino of event.porcinos) {
+            const index = this.porcinos.findIndex(p => p.id === porcino.id);
+            if (index !== -1) {
+              this.porcinos[index] = porcino;
+            } else {
+              this.porcinos.push(porcino);
+            }
+          }
+        }
+        else if (event.deletedId) {
+          this.porcinos = this.porcinos.filter(p => p.id !== event.deletedId);
+        }
+        this.dataSource.data = [...this.porcinos];
+      });
     }
 
   ngAfterViewInit() {

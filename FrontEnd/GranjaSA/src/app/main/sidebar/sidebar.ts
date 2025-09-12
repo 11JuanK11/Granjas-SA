@@ -7,6 +7,7 @@ import {MatToolbarModule} from '@angular/material/toolbar';
 import { RouterOutlet } from '@angular/router';
 import { MenuToggle } from '../Services/menu-toggle';
 import { RouterLink } from '@angular/router';
+import { ReportesService } from '../Services/ServicioPdf/reportes-service';
 
 export type MenuItem = {
   icon: string;
@@ -22,6 +23,7 @@ export type MenuItem = {
 })
 export class Sidebar implements OnInit {
 
+  servicioPdf = inject(ReportesService)
   @ViewChild('snav') snav!: MatSidenav;
   menuToggleService = inject(MenuToggle);
 
@@ -61,16 +63,10 @@ export class Sidebar implements OnInit {
       icon: 'agriculture',
       label: 'Porcinos',
       route: '/porcinos'
-    },
-    {
-      icon: 'dashboard',
-      label: 'Dashboard',
-      route: '/dashboard'
-    },
-    {
-      icon: 'analytics',
-      label: 'Reportes',
-      route: '/reportes'
     }
   ]);
+
+  crearReporte(){
+    this.servicioPdf.generarPDF();
+  }
 }

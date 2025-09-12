@@ -15,9 +15,12 @@
                 >
                     <mat-icon matListItemIcon> {{item.icon}} </mat-icon>
                     <span matListItemTitle >{{item.label}}</span>
-                </a>
-                    
+                </a>  
             }
+            <a mat-list-item (click)="crearReporte()">
+                <mat-icon matListItemIcon> analytics </mat-icon>
+                <span matListItemTitle > Reportes </span>
+            </a>
         </mat-nav-list>
     </mat-sidenav>
 
