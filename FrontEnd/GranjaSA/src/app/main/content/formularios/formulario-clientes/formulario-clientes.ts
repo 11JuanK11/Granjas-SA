@@ -55,7 +55,7 @@ export class FormularioClientes implements OnInit {
           },
         });
       }else{
-        this.servicioCliente.update(cliente.cedula, cliente).subscribe({
+        this.servicioCliente.update(cliente).subscribe({
           next: cliente => {
             console.log('Formulario enviado A:', cliente);
           },

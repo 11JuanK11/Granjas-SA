@@ -1,6 +1,8 @@
 package com.example.granjasa.Controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -43,7 +45,7 @@ public class ClienteController {
         return new ResponseEntity<>(clientes, HttpStatus.OK);
     }
 
-    @PutMapping("/cliente")
+    @PutMapping("/")
     public ResponseEntity<?> actualizar(@RequestBody Cliente cliente) {
         try {
             Cliente clienteActualizado = clienteService.actualizarCliente(cliente.getCedula(), cliente);
@@ -56,8 +58,10 @@ public class ClienteController {
     @DeleteMapping("/{idCliente}")
     public ResponseEntity<?> eliminar(@PathVariable Integer idCliente) {
         try {
-            clienteService.eliminarCliente(idCliente);;
-            return ResponseEntity.ok("Cliente eliminado con éxito");
+            clienteService.eliminarCliente(idCliente);
+            Map<String, String> respuesta = new HashMap<>();
+            respuesta.put("mensaje", "Cliente eliminado con éxito" );
+            return ResponseEntity.ok(respuesta);
         } catch (Exception e) {
             return ResponseEntity.status(404).body(e.getMessage());
         }

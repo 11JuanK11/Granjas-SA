@@ -13,71 +13,20 @@ import { Alimentacion } from 'app/main/Domain/Alimentacion';
 })
 export class ServicioCliente {
   private http = inject(HttpClient);
-  private baseUrl = 'http://localhost:8080/clientes';
+  private baseUrl = 'http://localhost:8080/cliente';
   private headers = new HttpHeaders({
     'Content-Type': 'application/json',
     'Accept': 'application/json'
   });
 
-  private useMock = true;
+  private useMock = false;
 
   private clienteSubject = new Subject<ClienteEvent>();
   cliente$ = this.clienteSubject.asObservable();
 
-clientesEjem: Cliente[] = [
-  new Cliente(
-    1001,
-    "Ana",
-    "Gómez",
-    "Calle 10 #20-30",
-    "3101234567",
-    [
-      new Porcino(
-        "P-001",
-        RazaPorcino.YORK,
-        2,
-        120,
-        new Alimentacion(1, "Concentrado Premium", "2kg/día"),
-        null // luego puedes asignar cliente si necesitas referencia inversa
-      ),
-      new Porcino(
-        "P-002",
-        RazaPorcino.DUROC,
-        1,
-        95,
-        new Alimentacion(2, "Maíz y soya", "3kg/día"),
-        null
-      )
-    ]
-  ),
-  new Cliente(
-    1002,
-    "Luis",
-    "Pérez",
-    "Avenida 5 #15-25",
-    "3207654321",
-    [
-      new Porcino(
-        "P-003",
-        RazaPorcino.HAMP,
-        3,
-        150,
-        new Alimentacion(3, "Balanceado porcino", "2.5kg/día"),
-        null
-      )
-    ]
-  ),
-  new Cliente(
-    1003,
-    "Sofía",
-    "Rodríguez",
-    "Carrera 7 #8-45",
-    "3009876543",
-    []
-  )
-];
+clientesEjem: Cliente[] = [];
 
-  // ===================== GET ALL =====================
+  // ===================== GET ALL ===================== bien
   getAll(): Observable<Cliente[]> {
     if (this.useMock) {
       return of(this.clientesEjem).pipe(
@@ -92,7 +41,7 @@ clientesEjem: Cliente[] = [
     }
   }
 
-  // ===================== GET BY ID =====================
+  // ===================== GET BY ID ===================== no necesario
   getById(cedula: number): Observable<Cliente> {
     if (this.useMock) {
       const cliente = this.clientesEjem.find(c => c.cedula === cedula);
@@ -104,7 +53,7 @@ clientesEjem: Cliente[] = [
     }
   }
 
-  // ===================== CREATE =====================
+  // ===================== CREATE ===================== bien
   create(cliente: Cliente): Observable<Cliente> {
     if (this.useMock) {
       this.clientesEjem.push(cliente);
@@ -119,22 +68,20 @@ clientesEjem: Cliente[] = [
     }
   }
 
-  // ===================== UPDATE =====================
-  update(cedula: number, cliente: Cliente): Observable<Cliente> {
+  // ===================== UPDATE ===================== bien
+  update(cliente: Cliente): Observable<Cliente> { 
     if (this.useMock) {
-      const index = this.clientesEjem.findIndex(c => c.cedula === cedula);
-      if (index !== -1) this.clientesEjem[index] = cliente;
       this.clienteSubject.next({ cliente }); // notifica actualización
       return of(cliente);
     } else {
-      return this.http.put<Cliente>(`${this.baseUrl}/${cedula}`, cliente, { headers: this.headers }).pipe(
+      return this.http.put<Cliente>(`${this.baseUrl}/`, cliente, { headers: this.headers }).pipe(
         tap(updated => this.clienteSubject.next({ cliente: updated })),
         catchError(this.handleError)
       );
     }
   }
 
-  // ===================== DELETE =====================
+  // ===================== DELETE ===================== bien
   delete(cedula: number): Observable<void> {
     if (this.useMock) {
       this.clientesEjem = this.clientesEjem.filter(c => c.cedula !== cedula);

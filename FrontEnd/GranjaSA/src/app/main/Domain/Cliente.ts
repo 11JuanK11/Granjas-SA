@@ -6,14 +6,12 @@ export class Cliente {
     apellidos: string;
     direccion: string;
     telefono: string;
-    porcinos?: Porcino[]
 
-    constructor(cedula: number, nombres: string, apellidos: string, direccion: string, telefono: string, porcinos?: Porcino[]) {
+    constructor(cedula: number, nombres: string, apellidos: string, direccion: string, telefono: string) {
         this.cedula = cedula;
         this.nombres = nombres;
         this.apellidos = apellidos;
         this.direccion = direccion;
         this.telefono = telefono;
-        this.porcinos = porcinos;
     }
 }

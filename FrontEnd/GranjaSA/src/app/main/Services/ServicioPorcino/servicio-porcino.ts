@@ -12,13 +12,12 @@ import { catchError, delay, Observable, of, Subject, tap, throwError } from 'rxj
 })
 export class ServicioPorcino {
   private http = inject(HttpClient);
-  private baseUrl = 'http://localhost:8080/porcinos';
+  private baseUrl = 'http://localhost:8080/porcino';
   private headers = new HttpHeaders({
     'Content-Type': 'application/json',
-    'Accept': 'application/json'
   });
 
-  private useMock = true;
+  private useMock = false;
 
   private porcinoSubject = new Subject<PorcinoEvent>();
   porcino$ = this.porcinoSubject.asObservable();
@@ -47,6 +46,7 @@ export class ServicioPorcino {
     new Porcino('M20', RazaPorcino.HAMP, 9, 93, new Alimentacion(2, 'Dieta de crecimiento', '1.9kg/día'), undefined)
 ];
 
+// funciona
   getAll(): Observable<Porcino[]> {
     if (this.useMock) {
       return of(this.porcinosEjem).pipe(
@@ -73,6 +73,7 @@ export class ServicioPorcino {
     }
   }
 
+  //funciona
 create(porcino: Porcino): Observable<Porcino> {
   if (this.useMock) {
     this.porcinosEjem.push(porcino);
@@ -94,7 +95,27 @@ createPorcinos(porcinos: Porcino[]): Observable<Porcino[]> {
     this.porcinoSubject.next({ porcinos }); // notifica creación múltiple
     return of(porcinos);
   } else {
-    return this.http.post<Porcino[]>(`${this.baseUrl}/`, porcinos, { headers: this.headers })
+      const porcinosPayload = porcinos.map(p => ({
+        id: p.id,
+        raza: p.raza,
+        edad: p.edad,
+        peso: p.peso,
+        alimentacion: {
+          id: p.alimentacion.id,
+          descripcion: p.alimentacion.descripcion,
+          dosis: p.alimentacion.dosis
+        },
+        cliente: p.cliente ? {
+          cedula: p.cliente.cedula,
+          nombres: p.cliente.nombres,
+          apellidos: p.cliente.apellidos,
+          direccion: p.cliente.direccion,
+          telefono: p.cliente.telefono,
+        }: null
+      }));
+    console.log('Payload enviado:', JSON.stringify(porcinos, null, 2));
+
+    return this.http.post<Porcino[]>(`${this.baseUrl}/lista`, porcinos, { headers: this.headers })
       .pipe(
         tap(newPorcinos => this.porcinoSubject.next({ porcinos: newPorcinos })), 
         catchError(this.handleError)
@@ -102,15 +123,13 @@ createPorcinos(porcinos: Porcino[]): Observable<Porcino[]> {
   }
 }
 
-
-update(id: string, porcino: Porcino): Observable<Porcino> {
+//funciona
+update(porcino: Porcino): Observable<Porcino> {
   if (this.useMock) {
-    const index = this.porcinosEjem.findIndex(p => p.id === id);
-    if (index !== -1) this.porcinosEjem[index] = porcino;
     this.porcinoSubject.next({ porcino }); // notifica actualización
     return of(porcino);
   } else {
-    return this.http.put<Porcino>(`${this.baseUrl}/${id}`, porcino, { headers: this.headers })
+    return this.http.put<Porcino>(`${this.baseUrl}/`, porcino, { headers: this.headers })
       .pipe(
         tap(updated => this.porcinoSubject.next({ porcino: updated })),
         catchError(this.handleError)
@@ -118,7 +137,7 @@ update(id: string, porcino: Porcino): Observable<Porcino> {
   }
 }
 
-  // ===================== DELETE =====================
+  // ===================== DELETE ===================== funciona
   delete(id: string): Observable<void> {
     if (this.useMock) {
       this.porcinosEjem = this.porcinosEjem.filter(p => p.id !== id);

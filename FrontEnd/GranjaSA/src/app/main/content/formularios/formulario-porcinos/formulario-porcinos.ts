@@ -84,7 +84,7 @@ export class FormularioPorcinos implements OnInit {
           },
         });
       }else{
-        this.servicioPorcino.update(porcino.id, porcino).subscribe({
+        this.servicioPorcino.update(porcino).subscribe({
           next: porcino => {
             console.log('Formulario enviado A:', porcino);
           },
