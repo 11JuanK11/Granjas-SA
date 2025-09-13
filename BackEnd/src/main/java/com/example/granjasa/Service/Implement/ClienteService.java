@@ -18,6 +18,9 @@ public class ClienteService implements IClienteService{
     @Autowired
     private IClienteRepository clienteRepository;
 
+    @Autowired
+    private PorcinoService porcinoService;
+
     @Override
     public Cliente crearCliente(Cliente cliente) throws EntityNotFoundException {
         if (cliente == null)
@@ -67,6 +70,13 @@ public class ClienteService implements IClienteService{
         if (!clienteRepository.existsById(idCliente)) {
             throw new EntityNotFoundException("No se encontró el cliente con cédula: " + idCliente);
         } else {
+            porcinoService.obtenerPorcinosPorCliente(idCliente).forEach(porcino -> {
+                try {
+                    porcino.setCliente(null);
+                } catch (EntityNotFoundException e) {
+                    throw new RuntimeException(e);
+                }
+            });
             clienteRepository.deleteById(idCliente);
         }
     }
