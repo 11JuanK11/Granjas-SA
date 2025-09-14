@@ -40,3 +40,8 @@ testem.log
 # System files
 .DS_Store
 Thumbs.db
+
+BackEnd/target/*
+FrontEnd/GranjaSA/node_modules
+FrontEnd/GranjaSA/.angular
+.vscode/
