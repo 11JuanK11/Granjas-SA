@@ -27,7 +27,7 @@ public class ReporteService {
             List<Porcino> porcinos = porcinoService.obtenerPorcinosPorCliente(cliente.getCedula());
             if (!porcinos.isEmpty()) {
                 Reporte reporte = new Reporte();
-                reporte.setClientes(cliente);
+                reporte.setCliente(cliente);
                 reporte.setPorcinos(porcinos);
                 reportes.add(reporte);
             }

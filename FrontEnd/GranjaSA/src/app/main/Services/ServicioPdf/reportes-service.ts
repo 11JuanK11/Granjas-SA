@@ -1,11 +1,10 @@
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { Cliente } from 'app/main/Domain/Cliente';
-import { Porcino } from 'app/main/Domain/Porcino';
-import { ServicioCliente } from 'app/main/Services/ServicioCliente/servicio-cliente';
+import { catchError, Observable, tap, throwError } from 'rxjs';
 
-// Import pdfmake
 import pdfMake from 'pdfmake/build/pdfmake';
 import pdfFonts from 'pdfmake/build/vfs_fonts';
+import { Reporte } from 'app/main/Domain/Reporte';
 
 (pdfMake as any).vfs = pdfFonts.vfs;
 
@@ -13,43 +12,52 @@ import pdfFonts from 'pdfmake/build/vfs_fonts';
   providedIn: 'root'
 })
 export class ReportesService {
-  private servicioCliente = inject(ServicioCliente);
+  private http = inject(HttpClient);
+  private baseUrl = 'http://localhost:8080/reporte';
 
   constructor() {}
 
   generarPDF() {
-    this.servicioCliente.getAll().subscribe({
-      next: (clientes: (Cliente & { porcinos?: Porcino[] })[]) => {
+    this.getAll().subscribe({
+      next: (reportes: Reporte[]) => {
         const content: any[] = [];
 
-        // Título principal
-        content.push({ text: 'Reporte de Clientes y Porcinos', style: 'header', margin: [0, 0, 0, 15] , lineHeight: 2
-});
+        content.push({
+          text: 'Reporte de Clientes y Porcinos',
+          style: 'header',
+          margin: [0, 0, 0, 15],
+          lineHeight: 2
+        });
+
         content.push({
           canvas: [
             {
               type: 'line',
               x1: 0, y1: 0,
-              x2: 515, y2: 0, // ancho del PDF (~A4 = 515px)
+              x2: 515, y2: 0,
               lineWidth: 1
             }
           ],
           margin: [0, 10, 0, 10]
         });
 
+        reportes.forEach((reporte, index) => {
+          const cliente = reporte.cliente;
+          const porcinos = reporte.porcinos;
+          content.push({
+            text: `Cliente ${index + 1}: ${cliente.nombres} ${cliente.apellidos}`,
+            bold: true,
+            lineHeight: 2
+          });
 
-        clientes.forEach((cliente, index) => {
-          // Cliente como lista
-          content.push({ text: `Cliente ${index + 1}: ${cliente.nombres} ${cliente.apellidos}`, bold: true , lineHeight: 2
-})
           content.push({
             ul: [
               `Cédula: ${cliente.cedula}`,
               `Dirección: ${cliente.direccion}`,
               `Teléfono: ${cliente.telefono}`,
               {
-                ul: cliente.porcinos?.length
-                  ? cliente.porcinos.map(
+                ul: porcinos?.length
+                  ? porcinos.map(
                       (porcino, idx) =>
                         `Cerdo ${idx + 1}: [ID: ${porcino.id}] ${porcino.raza}, Edad: ${porcino.edad} años, Peso: ${porcino.peso}kg, Alimentación: ${porcino.alimentacion.descripcion} (${porcino.alimentacion.dosis})`
                     )
@@ -57,23 +65,22 @@ export class ReportesService {
               }
             ],
             margin: [10, 5, 5, 10],
-            lineHeight: 2});
+            lineHeight: 2
+          });
 
           content.push({
             canvas: [
               {
                 type: 'line',
                 x1: 0, y1: 0,
-                x2: 515, y2: 0, // ancho del PDF (~A4 = 515px)
+                x2: 515, y2: 0,
                 lineWidth: 1
               }
             ],
             margin: [0, 10, 0, 10]
           });
-
         });
 
-        // Definición del documento
         const documentDefinition: any = {
           content: content,
           styles: {
@@ -88,8 +95,23 @@ export class ReportesService {
         pdfMake.createPdf(documentDefinition).download('Reporte_Clientes.pdf');
       },
       error: err => {
-        console.error('Error obteniendo clientes:', err);
+        console.error('Error obteniendo reportes:', err);
       }
     });
+  }
+
+  private getAll(): Observable<Reporte[]> {
+    return this.http.get<Reporte[]>(`${this.baseUrl}/`).pipe(
+      tap(data => console.log('Fetched reportes (API):', data)),
+      catchError(this.handleError)
+    );
+  }
+
+  private handleError(error: HttpErrorResponse): Observable<never> {
+    const errorMessage = error.error instanceof ErrorEvent
+      ? `Error: ${error.error.message}`
+      : `Server error (${error.status}): ${error.message}`;
+    console.error(errorMessage);
+    return throwError(() => new Error(errorMessage));
   }
 }

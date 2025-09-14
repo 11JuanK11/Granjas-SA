@@ -14,6 +14,6 @@ public class Reporte {
     
     @Id
     private Integer idReporte;
-    public Cliente clientes;
+    public Cliente cliente;
     public List<Porcino> porcinos;
 }
