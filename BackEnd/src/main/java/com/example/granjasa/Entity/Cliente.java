@@ -34,7 +34,7 @@ public class Cliente implements Serializable {
     @Column(nullable = false)
     private String telefono;
 
-    @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "cliente", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JsonIgnore
     private List<Porcino> porcinos = new ArrayList<>();
     
