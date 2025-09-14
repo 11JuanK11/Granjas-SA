@@ -26,7 +26,7 @@ public class ReporteService {
         for (Cliente cliente : clientes) {
             List<Porcino> porcinos = porcinoService.obtenerPorcinosPorCliente(cliente.getCedula());
             Reporte reporte = new Reporte();
-            reporte.setClientes(cliente);
+            reporte.setCliente(cliente);
             reporte.setPorcinos(porcinos);
             reportes.add(reporte);
         }

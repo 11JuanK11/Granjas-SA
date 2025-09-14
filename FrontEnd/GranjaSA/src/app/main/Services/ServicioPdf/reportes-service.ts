@@ -1,10 +1,10 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { Reporte } from 'app/main/Domain/reporte';
 import { catchError, Observable, tap, throwError } from 'rxjs';
 
 import pdfMake from 'pdfmake/build/pdfmake';
 import pdfFonts from 'pdfmake/build/vfs_fonts';
+import { Reporte } from 'app/main/Domain/Reporte';
 
 (pdfMake as any).vfs = pdfFonts.vfs;
 
