@@ -50,9 +50,7 @@ public class PorcinoService implements IPorcinoService{
             throw new EntityNotFoundException("No se encontró el cliente con ID: " + idCliente);
         }
         List<Porcino> porcinos = cliente.get().getPorcinos();
-        if (porcinos.isEmpty()) {
-            throw new EntityNotFoundException("No se encontraron porcinos para el cliente con ID: " + idCliente);
-        }
+        
         return porcinos;
     }
 
