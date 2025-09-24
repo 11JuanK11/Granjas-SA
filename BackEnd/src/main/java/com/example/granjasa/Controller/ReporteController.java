@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.granjasa.Entity.Reporte;
 import com.example.granjasa.Service.Implement.ReporteService;
 
-@CrossOrigin(origins = "http://localhost:4200")
 @RestController
 @RequestMapping("/reporte")
 public class ReporteController {
