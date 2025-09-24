@@ -5,6 +5,7 @@ import { Cliente } from 'app/main/Domain/Cliente';
 import { Porcino } from 'app/main/Domain/Porcino';
 import { PorcinoEvent } from 'app/main/Domain/PorcinoEvent';
 import { RazaPorcino } from 'app/main/Domain/RazaPorcino';
+import { environment } from 'enviroment.prod';
 import { catchError, delay, Observable, of, Subject, tap, throwError } from 'rxjs';
 
 @Injectable({
@@ -12,7 +13,7 @@ import { catchError, delay, Observable, of, Subject, tap, throwError } from 'rxj
 })
 export class ServicioPorcino {
   private http = inject(HttpClient);
-  private baseUrl = 'http://localhost:8080/porcino';
+  private baseUrl = `${environment.apiUrl}/porcino`;
   private headers = new HttpHeaders({
     'Content-Type': 'application/json',
   });

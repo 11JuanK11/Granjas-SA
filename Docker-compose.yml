@@ -1,0 +1,58 @@
+version: '3.9'
+
+services:
+  mysql-db:
+    image: mysql:8.0
+    container_name: mysql-db
+    restart: always
+    environment:
+      MYSQL_DATABASE: granja_sa
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: 123
+      MYSQL_ROOT_PASSWORD: root123
+    expose:
+      - "3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - granja-net
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot123"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: ./BackEnd
+      dockerfile: Dockerfile
+    container_name: granja-backend
+    depends_on:
+      - mysql-db
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql-db:3306/granja_sa
+      SPRING_DATASOURCE_USERNAME: admin
+      SPRING_DATASOURCE_PASSWORD: 123
+    ports:
+      - "9090:8080"   # expone el backend en el host: localhost:9090
+    networks:
+      - granja-net
+
+  frontend:
+    build:
+      context: ./FrontEnd/GranjaSA
+      dockerfile: Dockerfile
+    container_name: granja-frontend
+    depends_on:
+      - backend
+    ports:
+      - "4200:80"
+    networks:
+      - granja-net
+
+volumes:
+  mysql_data:
+
+networks:
+  granja-net:
+    driver: bridge

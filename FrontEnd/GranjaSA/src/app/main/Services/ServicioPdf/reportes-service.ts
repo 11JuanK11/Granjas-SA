@@ -5,6 +5,7 @@ import { catchError, Observable, tap, throwError } from 'rxjs';
 import pdfMake from 'pdfmake/build/pdfmake';
 import pdfFonts from 'pdfmake/build/vfs_fonts';
 import { Reporte } from 'app/main/Domain/Reporte';
+import { environment } from 'enviroment.prod';
 
 (pdfMake as any).vfs = pdfFonts.vfs;
 
@@ -13,7 +14,7 @@ import { Reporte } from 'app/main/Domain/Reporte';
 })
 export class ReportesService {
   private http = inject(HttpClient);
-  private baseUrl = 'http://localhost:8080/reporte';
+  private baseUrl = `${environment.apiUrl}/reporte`;
 
   constructor() {}
 

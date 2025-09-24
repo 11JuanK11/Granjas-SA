@@ -4,16 +4,14 @@ import { Observable, of, Subject, throwError } from 'rxjs';
 import { catchError, delay, tap } from 'rxjs/operators';
 import { Cliente } from 'app/main/Domain/Cliente';
 import { ClienteEvent } from 'app/main/Domain/ClienteEvent';
-import { Porcino } from 'app/main/Domain/Porcino';
-import { RazaPorcino } from 'app/main/Domain/RazaPorcino';
-import { Alimentacion } from 'app/main/Domain/Alimentacion';
+import { environment } from 'enviroment.prod';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ServicioCliente {
   private http = inject(HttpClient);
-  private baseUrl = 'http://localhost:8080/cliente';
+  private baseUrl = `${environment.apiUrl}/cliente`;
   private headers = new HttpHeaders({
     'Content-Type': 'application/json',
     'Accept': 'application/json'
