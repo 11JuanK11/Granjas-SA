@@ -22,7 +22,6 @@ import com.example.granjasa.Entity.Porcino;
 import com.example.granjasa.Service.Implement.ClienteService;
 import com.example.granjasa.Service.Implement.PorcinoService;
 
-@CrossOrigin(origins = "http://localhost:4200")
 @RestController
 @RequestMapping("/porcino")
 public class PorcinoController {
