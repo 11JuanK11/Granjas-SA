@@ -32,6 +32,11 @@
     
     <!-- Dependencias -->
     <dependencies>
+        <dependency>
+            <groupId>com.graphql-java-kickstart</groupId>
+            <artifactId>graphql-spring-boot-starter</artifactId>
+            <version>11.1.0</version>
+        </dependency>
         <!-- Add your dependencies here -->
         <dependency>
             <groupId>jakarta.persistence</groupId>
