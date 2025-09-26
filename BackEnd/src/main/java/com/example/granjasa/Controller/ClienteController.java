@@ -6,8 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 
 import com.example.granjasa.Dto.ActualizarClienteInput;
@@ -23,8 +21,8 @@ public class ClienteController {
     public ClienteService clienteService;
 
     @MutationMapping
-    public ResponseEntity<Cliente> crearCliente(@Argument ClienteInput input) {
-        try {
+    public Cliente crearCliente(@Argument ClienteInput input) {
+
             Cliente clienteNuevo = new Cliente();
             clienteNuevo.setCedula(input.getCedula());
             clienteNuevo.setNombres(input.getNombres());
@@ -33,27 +31,22 @@ public class ClienteController {
             clienteNuevo.setTelefono(input.getTelefono());
             
             Cliente cliente = clienteService.crearCliente(clienteNuevo);
-            return new ResponseEntity<>(cliente, HttpStatus.CREATED);
-            
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+            return cliente;
     }
 
     @QueryMapping
-    public ResponseEntity<List<Cliente>> clientes() {
+    public List<Cliente> clientes() {
         try {
             List<Cliente> clientes = clienteService.obtenerClientes();
-            return new ResponseEntity<>(clientes, HttpStatus.OK);
+            return clientes;
         } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            return null;
         }
     }
 
     @MutationMapping
-    public ResponseEntity<Cliente> actualizarCliente(@Argument ActualizarClienteInput input) {
-        try {
+    public Cliente actualizarCliente(@Argument ActualizarClienteInput input) {
+
             Cliente cliente = new Cliente();
             cliente.setCedula(input.getCedula());
             
@@ -63,20 +56,16 @@ public class ClienteController {
             if (input.getTelefono() != null) cliente.setTelefono(input.getTelefono());
             
             Cliente clienteActualizado = clienteService.actualizarCliente(cliente.getCedula(), cliente);
-            return ResponseEntity.ok(clienteActualizado);
-            
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
-        }
+            return clienteActualizado;
+
     }
 
     @MutationMapping
-    public ResponseEntity<RespuestaEliminacion> eliminarCliente(@Argument Integer idCliente) {
-    try {
+    public RespuestaEliminacion eliminarCliente(@Argument Integer idCliente) {
+
         clienteService.eliminarCliente(idCliente);
-        return ResponseEntity.ok(new RespuestaEliminacion("Cliente eliminado con éxito", null));
-    } catch (Exception e) {
-        return ResponseEntity.status(404).body(new RespuestaEliminacion(null, e.getMessage()));
+        RespuestaEliminacion respuesta = new RespuestaEliminacion("Cliente eliminado con éxito", null);
+        return respuesta;
+    
     }
-}
 }
