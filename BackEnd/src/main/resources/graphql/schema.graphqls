@@ -9,7 +9,7 @@ type Query {
     porcinos: [Porcino]
     
     # Consultas de Reporte
-    reportes: [Reporte]
+    reportes: Reporte
     
     # Consultas de Alimentación
     alimentaciones: [Alimentacion]
