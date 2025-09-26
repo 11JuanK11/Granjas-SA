@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 
 import com.example.granjasa.Dto.ActualizarPorcinoInput;
@@ -29,46 +28,47 @@ public class PorcinoController {
     public ClienteService clienteService;
 
     @MutationMapping
-public ResponseEntity<List<Porcino>> crearListaPorcinos(@Argument List<PorcinoInput> input) {
-    try {
-        if (input == null || input.isEmpty()) {
-            return ResponseEntity.badRequest().build();
-        }
-
-        List<Porcino> porcinosSave = new ArrayList<>();
-
-        for (PorcinoInput porcinoInput : input) {
-            Porcino porcino = new Porcino();
-            porcino.setId(porcinoInput.getId());
-            porcino.setRaza(porcinoInput.getRaza());
-            porcino.setEdad(porcinoInput.getEdad());
-            porcino.setPeso(porcinoInput.getPeso());
-
-            if (porcinoInput.getClienteCedula() != null) {
-                Cliente cliente = clienteService.obtenerClientePorId(porcinoInput.getClienteCedula());
-                porcino.setCliente(cliente);
+    public List<Porcino> crearListaPorcinos(@Argument List<PorcinoInput> input) {
+        try {
+            if (input == null || input.isEmpty()) {
+                throw new IllegalArgumentException("La lista de porcinos no puede estar vacía");
             }
 
-            if (porcinoInput.getAlimentacion() != null) {
-                Alimentacion alimentacion = new Alimentacion();
-                alimentacion.setDescripcion(porcinoInput.getAlimentacion().getDescripcion());
-                alimentacion.setDosis(porcinoInput.getAlimentacion().getDosis());
-                porcino.setAlimentacion(alimentacion);
+            List<Porcino> porcinosSave = new ArrayList<>();
+
+            for (PorcinoInput porcinoInput : input) {
+                Porcino porcino = new Porcino();
+                porcino.setId(porcinoInput.getId());
+                porcino.setRaza(porcinoInput.getRaza());
+                porcino.setEdad(porcinoInput.getEdad());
+                porcino.setPeso(porcinoInput.getPeso());
+
+                if (porcinoInput.getClienteCedula() != null) {
+                    Cliente cliente = clienteService.obtenerClientePorId(porcinoInput.getClienteCedula());
+                    porcino.setCliente(cliente);
+                }
+
+                if (porcinoInput.getAlimentacion() != null) {
+                    Alimentacion alimentacion = new Alimentacion();
+                    alimentacion.setDescripcion(porcinoInput.getAlimentacion().getDescripcion());
+                    alimentacion.setDosis(porcinoInput.getAlimentacion().getDosis());
+                    porcino.setAlimentacion(alimentacion);
+                }
+
+                porcinosSave.add(porcinoService.crearPorcino(porcino));
             }
 
-            porcinosSave.add(porcinoService.crearPorcino(porcino));
+            return porcinosSave;
+
         }
-
-        return ResponseEntity.ok(porcinosSave);
-
-    } catch (Exception e) {
-        return ResponseEntity.internalServerError().build();
+        catch (Exception e) {
+            throw new RuntimeException("Error al crear la lista de porcinos: " + e.getMessage());
+        }
     }
-}
 
 
     @MutationMapping
-    public ResponseEntity<Porcino> crearPorcino(@Argument PorcinoInput input) {
+    public Porcino crearPorcino(@Argument PorcinoInput input) {
         try {
             Cliente cliente = clienteService.obtenerClientePorId(input.getClienteCedula());
             Porcino porcino = new Porcino();
@@ -84,27 +84,26 @@ public ResponseEntity<List<Porcino>> crearListaPorcinos(@Argument List<PorcinoIn
                 alimentacion.setDosis(input.getAlimentacion().getDosis());
                 porcino.setAlimentacion(alimentacion);
             }
-            
 
             Porcino creado = porcinoService.crearPorcino(porcino);
-            return ResponseEntity.ok(creado);
+            return creado;
 
         } catch (Exception e) {
-            return ResponseEntity.internalServerError().build();
+            throw new RuntimeException("Error al crear el porcino: " + e.getMessage());
         }
     }
 
     @QueryMapping
-    public ResponseEntity<List<Porcino>> porcinos() {
+    public List<Porcino> porcinos() {
         try {
-            return ResponseEntity.ok(porcinoService.obtenerPorcinos());
+            return porcinoService.obtenerPorcinos();
         } catch (Exception e) {
-            return ResponseEntity.internalServerError().build();
+            throw new RuntimeException("Error obtener la lista de porcinos: " + e.getMessage());
         }
     }
 
     @MutationMapping
-    public ResponseEntity<Porcino> actualizarPorcino(@Argument ActualizarPorcinoInput input) {
+    public Porcino actualizarPorcino(@Argument ActualizarPorcinoInput input) {
         try {
             Porcino porcino = porcinoService.obtenerPorcinoPorId(input.getId());
 
@@ -124,20 +123,21 @@ public ResponseEntity<List<Porcino>> crearListaPorcinos(@Argument List<PorcinoIn
             
 
             Porcino actualizado = porcinoService.actualizarPorcino(input.getId(), porcino);
-            return ResponseEntity.ok(actualizado);
+            return actualizado;
 
         } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
+            throw new RuntimeException("Error al actualizar el porcino: " + e.getMessage());
         }
     }
 
     @MutationMapping
-    public ResponseEntity<RespuestaEliminacion> eliminarPorcino(@Argument String id) {
+    public RespuestaEliminacion eliminarPorcino(@Argument String id) {
         try {
             porcinoService.eliminarPorcino(id);
-            return ResponseEntity.ok(new RespuestaEliminacion("Porcino eliminado con éxito", null));
+            RespuestaEliminacion respuesta = new RespuestaEliminacion("Porcino eliminado con éxito", null);
+            return respuesta;
         } catch (Exception e) {
-            return ResponseEntity.status(404).body(new RespuestaEliminacion(null, e.getMessage()));
+            throw new RuntimeException("Error al eliminar el porcino: " + e.getMessage());
         }
     }
 }

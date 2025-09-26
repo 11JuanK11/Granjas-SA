@@ -40,7 +40,7 @@ public class ClienteController {
             List<Cliente> clientes = clienteService.obtenerClientes();
             return clientes;
         } catch (Exception e) {
-            return null;
+            throw new RuntimeException("Error al obtener la lista de clientes: " + e.getMessage());
         }
     }
 
