@@ -5,7 +5,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { Cliente } from 'app/main/Domain/Cliente';
-import { ServicioCliente } from 'app/main/Services/ServicioCliente/servicio-cliente';
+import { ClienteServiceGraph } from 'app/main/GraphQL-Services/ServicioCliente/cliente-service-graph';
 
 @Component({
   selector: 'app-formulario-clientes',
@@ -15,7 +15,7 @@ import { ServicioCliente } from 'app/main/Services/ServicioCliente/servicio-clie
 })
 export class FormularioClientes implements OnInit {
   clienteForm!: FormGroup;
-  servicioCliente = inject(ServicioCliente);
+  servicioCliente = inject(ClienteServiceGraph);
   @Input() clienteData: Cliente | null = null;
   nuevoCliente: boolean = true;
 

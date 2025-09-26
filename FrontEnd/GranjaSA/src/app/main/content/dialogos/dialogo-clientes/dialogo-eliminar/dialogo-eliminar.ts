@@ -1,7 +1,7 @@
 import { Component, inject, Input } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';
-import { ServicioCliente } from 'app/main/Services/ServicioCliente/servicio-cliente';
+import { ClienteServiceGraph } from 'app/main/GraphQL-Services/ServicioCliente/cliente-service-graph';
 
 @Component({
   selector: 'app-dialogo-eliminar-cliente',
@@ -11,7 +11,7 @@ import { ServicioCliente } from 'app/main/Services/ServicioCliente/servicio-clie
 })
 export class DialogoEliminar {
   @Input() cedula: number = -1;
-  servicioCliente = inject(ServicioCliente);
+  servicioCliente = inject(ClienteServiceGraph);
 
   eliminarCliente(cedula: number){
     console.log(`cedula a eliminar ${cedula}`);

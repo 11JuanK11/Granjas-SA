@@ -7,8 +7,8 @@ import { MatSelectModule } from '@angular/material/select';
 import { Cliente } from 'app/main/Domain/Cliente';
 import { Porcino } from 'app/main/Domain/Porcino';
 import { RazaPorcino } from 'app/main/Domain/RazaPorcino';
-import { ServicioCliente } from 'app/main/Services/ServicioCliente/servicio-cliente';
-import { ServicioPorcino } from 'app/main/Services/ServicioPorcino/servicio-porcino';
+import { ClienteServiceGraph } from 'app/main/GraphQL-Services/ServicioCliente/cliente-service-graph';
+import { PorcinoServiceGraph } from 'app/main/GraphQL-Services/ServicioPorcino/porcino-service-graph';
 
 @Component({
   selector: 'app-formulario-porcinos',
@@ -19,8 +19,8 @@ import { ServicioPorcino } from 'app/main/Services/ServicioPorcino/servicio-porc
 export class FormularioPorcinos implements OnInit {
   porcinoForm!: FormGroup;
 
-  servicioPorcino = inject(ServicioPorcino);
-  servicioCliente = inject(ServicioCliente);
+  servicioPorcino = inject(PorcinoServiceGraph);
+  servicioCliente = inject(ClienteServiceGraph);
 
   @Input() porcinoData: Porcino | null = null;
 

@@ -31,12 +31,15 @@
     "@angular/platform-server": "^20.1.0",
     "@angular/router": "^20.1.0",
     "@angular/ssr": "^20.1.0",
+    "apollo-angular": "^11.0.0",
     "express": "^5.1.0",
     "file-saver": "^2.0.5",
     "pdfmake": "^0.2.20",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
-    "xlsx": "^0.18.5"
+    "xlsx": "^0.18.5",
+    "@apollo/client": "^3.0.0",
+    "graphql": "^16"
   },
   "devDependencies": {
     "@angular/build": "^20.1.0",

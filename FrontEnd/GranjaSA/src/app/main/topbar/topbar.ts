@@ -6,10 +6,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MenuToggle } from '../Services/menu-toggle';
 import { RouterLink } from "@angular/router";
 import { ExcelService } from '../Services/ServicioExcel/excel-service';
-import { Alimentacion } from '../Domain/Alimentacion';
-import { Cliente } from '../Domain/Cliente';
-import { Porcino } from '../Domain/Porcino';
-import { ServicioPorcino } from '../Services/ServicioPorcino/servicio-porcino';
+import { PorcinoServiceGraph } from '../GraphQL-Services/ServicioPorcino/porcino-service-graph';
 
 @Component({
   selector: 'app-topbar',
@@ -20,7 +17,7 @@ import { ServicioPorcino } from '../Services/ServicioPorcino/servicio-porcino';
 export class Topbar {
   private menuToggleService = inject(MenuToggle);
   private servicoExcel = inject(ExcelService);
-  private servicioPorcino = inject(ServicioPorcino);
+  servicioPorcino = inject(PorcinoServiceGraph);
 
   onMenuToggle(): void {
     this.menuToggleService.toggleMenu();
