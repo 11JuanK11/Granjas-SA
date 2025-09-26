@@ -1,6 +1,7 @@
 import { Component, inject, Input } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';
+import { PorcinoServiceGraph } from 'app/main/GraphQL-Services/ServicioPorcino/porcino-service-graph';
 import { ServicioPorcino } from 'app/main/Services/ServicioPorcino/servicio-porcino';
 
 @Component({
@@ -11,7 +12,7 @@ import { ServicioPorcino } from 'app/main/Services/ServicioPorcino/servicio-porc
 })
 export class DialogoEliminar {
   @Input() porcinoId: string = '';
-  servicioPorcino = inject(ServicioPorcino);
+  servicioPorcino = inject(PorcinoServiceGraph);
 
   eliminarPorcino(porcinoId: string){
     console.log(`id del porcino a eliminar ${porcinoId}`);

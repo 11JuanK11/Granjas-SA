@@ -5,7 +5,6 @@ import {MatTableDataSource, MatTableModule} from '@angular/material/table';
 import {MatInputModule} from '@angular/material/input';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {Cliente} from '../../Domain/Cliente';
-import { ServicioCliente } from 'app/main/Services/ServicioCliente/servicio-cliente';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTooltipModule } from '@angular/material/tooltip';
@@ -13,7 +12,8 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { DialogoIngresar } from '../dialogos/dialogo-clientes/dialogo-ingresar/dialogo-ingresar';
 import { DialogoEditar } from '../dialogos/dialogo-clientes/dialogo-editar/dialogo-editar';
 import { DialogoEliminar } from '../dialogos/dialogo-clientes/dialogo-eliminar/dialogo-eliminar';
-import { ServicioPorcino } from 'app/main/Services/ServicioPorcino/servicio-porcino';
+import { PorcinoServiceGraph } from 'app/main/GraphQL-Services/ServicioPorcino/porcino-service-graph';
+import { ClienteServiceGraph } from 'app/main/GraphQL-Services/ServicioCliente/cliente-service-graph';
 
 
 @Component({
@@ -25,8 +25,8 @@ import { ServicioPorcino } from 'app/main/Services/ServicioPorcino/servicio-porc
 export class Clientes implements OnInit, AfterViewInit {
   displayedColumns: string[] = ['Cedula', 'Nombres', 'Apellidos', 'Direccion', 'Telefono', 'Acciones'];
   dataSource: MatTableDataSource<Cliente>;
-  servicioCliente = inject(ServicioCliente);
-  servicioPorcino = inject(ServicioPorcino)
+  servicioCliente = inject(ClienteServiceGraph);
+  servicioPorcino = inject(PorcinoServiceGraph);
   readonly dialog = inject(MatDialog);
   clientes: Cliente[] = [];
 
