@@ -1,0 +1,5 @@
+type Reporte {
+  idReporte: ID
+  cliente: Cliente
+  porcinos: [Porcino]
+}

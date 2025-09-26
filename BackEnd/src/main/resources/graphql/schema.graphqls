@@ -1,0 +1,33 @@
+# Schema principal con Queries y Mutations
+type Query {
+    # Consultas de Cliente
+    clientes: [Cliente]
+    cliente(cedula: String!): Cliente
+    clientesPorNombre(nombre: String!): [Cliente]
+    
+    # Consultas de Porcino
+    porcinos: [Porcino]
+    
+    # Consultas de Reporte
+    reportes: Reporte
+    
+    # Consultas de Alimentación
+    alimentaciones: [Alimentacion]
+    alimentacion(id: ID!): Alimentacion
+}
+
+type Mutation {
+    # Mutaciones de Cliente
+    crearCliente(input: ClienteInput!): Cliente
+    actualizarCliente(input: ActualizarClienteInput!): Cliente
+    eliminarCliente(idCliente: Int!): RespuestaEliminacion
+    
+    # Mutaciones de Porcino (incluye alimentación)
+    crearPorcino(input: PorcinoInput!): Porcino
+    actualizarPorcino(input: ActualizarPorcinoInput!): Porcino
+    eliminarPorcino(id: ID!): RespuestaEliminacion
+    crearListaPorcinos(input: [PorcinoInput!]!): [Porcino]
+    
+    # Mutación específica para actualizar solo alimentación
+    actualizarAlimentacion(porcinoId: ID!, input: AlimentacionInput!): Porcino
+}

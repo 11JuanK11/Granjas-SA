@@ -1,68 +1,71 @@
 package com.example.granjasa.Controller;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.graphql.data.method.annotation.Argument;
+import org.springframework.graphql.data.method.annotation.MutationMapping;
+import org.springframework.graphql.data.method.annotation.QueryMapping;
+import org.springframework.stereotype.Controller;
 
+import com.example.granjasa.Dto.ActualizarClienteInput;
+import com.example.granjasa.Dto.ClienteInput;
+import com.example.granjasa.Dto.RespuestaEliminacion;
 import com.example.granjasa.Entity.Cliente;
 import com.example.granjasa.Service.Implement.ClienteService;
 
-@RestController
-@RequestMapping("/cliente")
+@Controller
 public class ClienteController {
     
     @Autowired
     public ClienteService clienteService;
 
-    @PostMapping("/")
-    public ResponseEntity<?> insertar(@RequestBody Cliente clienteNuevo) {
-        try {
+    @MutationMapping
+    public Cliente crearCliente(@Argument ClienteInput input) {
+
+            Cliente clienteNuevo = new Cliente();
+            clienteNuevo.setCedula(input.getCedula());
+            clienteNuevo.setNombres(input.getNombres());
+            clienteNuevo.setApellidos(input.getApellidos());
+            clienteNuevo.setDireccion(input.getDireccion());
+            clienteNuevo.setTelefono(input.getTelefono());
+            
             Cliente cliente = clienteService.crearCliente(clienteNuevo);
-            return new ResponseEntity<>(cliente, HttpStatus.CREATED);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            return new ResponseEntity<>("Se produjo un error al registrar al cliente." + ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+            return cliente;
+    }
+
+    @QueryMapping
+    public List<Cliente> clientes() {
+        try {
+            List<Cliente> clientes = clienteService.obtenerClientes();
+            return clientes;
+        } catch (Exception e) {
+            throw new RuntimeException("Error al obtener la lista de clientes: " + e.getMessage());
         }
     }
 
-    @GetMapping("/")
-    public ResponseEntity<List<Cliente>> obtener() {
-        List<Cliente> clientes = clienteService.obtenerClientes();
-        return new ResponseEntity<>(clientes, HttpStatus.OK);
-    }
+    @MutationMapping
+    public Cliente actualizarCliente(@Argument ActualizarClienteInput input) {
 
-    @PutMapping("/")
-    public ResponseEntity<?> actualizar(@RequestBody Cliente cliente) {
-        try {
+            Cliente cliente = new Cliente();
+            cliente.setCedula(input.getCedula());
+            
+            if (input.getNombres() != null) cliente.setNombres(input.getNombres());
+            if (input.getApellidos() != null) cliente.setApellidos(input.getApellidos());
+            if (input.getDireccion() != null) cliente.setDireccion(input.getDireccion());
+            if (input.getTelefono() != null) cliente.setTelefono(input.getTelefono());
+            
             Cliente clienteActualizado = clienteService.actualizarCliente(cliente.getCedula(), cliente);
-            return ResponseEntity.ok(clienteActualizado);
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+            return clienteActualizado;
+
     }
 
-    @DeleteMapping("/{idCliente}")
-    public ResponseEntity<?> eliminar(@PathVariable Integer idCliente) {
-        try {
-            clienteService.eliminarCliente(idCliente);
-            Map<String, String> respuesta = new HashMap<>();
-            respuesta.put("mensaje", "Cliente eliminado con éxito" );
-            return ResponseEntity.ok(respuesta);
-        } catch (Exception e) {
-            return ResponseEntity.status(404).body(e.getMessage());
-        }
+    @MutationMapping
+    public RespuestaEliminacion eliminarCliente(@Argument Integer idCliente) {
+
+        clienteService.eliminarCliente(idCliente);
+        RespuestaEliminacion respuesta = new RespuestaEliminacion("Cliente eliminado con éxito", null);
+        return respuesta;
+    
     }
 }
