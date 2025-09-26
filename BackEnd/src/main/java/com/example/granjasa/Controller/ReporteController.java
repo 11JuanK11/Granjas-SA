@@ -16,7 +16,7 @@ public class ReporteController {
     public ReporteService reporteService;
 
     @QueryMapping
-    public List<Reporte> obtener() {
+    public List<Reporte> reportes() {
         List<Reporte> reportes = reporteService.generarReporte();
         return reportes;
     }
