@@ -1,0 +1,43 @@
+# ==============================
+# TYPE
+# ==============================
+type Porcino {
+    id: ID!
+    raza: String!
+    edad: Int!
+    peso: Int!
+    cliente: Cliente!             # Relación ManyToOne
+    alimentacion: Alimentacion    # Relación OneToOne
+}
+
+type Alimentacion {
+    id: ID!
+    descripcion: String
+    dosis: String
+}
+
+# ==============================
+# INPUTS
+# ==============================
+input AlimentacionInput {
+    descripcion: String
+    dosis: String
+}
+
+input PorcinoInput {
+    id: ID
+    raza: String!
+    edad: Int!
+    peso: Int!
+    clienteCedula: Int!          
+    alimentacion: AlimentacionInput
+}
+
+input ActualizarPorcinoInput {
+    id: ID!                      
+    raza: String
+    edad: Int
+    peso: Int
+    clienteCedula: Int
+    alimentacion: AlimentacionInput
+}

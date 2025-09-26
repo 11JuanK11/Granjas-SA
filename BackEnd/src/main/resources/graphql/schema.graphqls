@@ -7,15 +7,9 @@ type Query {
     
     # Consultas de Porcino
     porcinos: [Porcino]
-    porcino(id: ID!): Porcino
-    porcinosPorCliente(clienteCedula: String!): [Porcino]
-    porcinosPorRaza(raza: String!): [Porcino]
     
     # Consultas de Reporte
     reportes: [Reporte]
-    reporte(id: ID!): Reporte
-    reportesPorCliente(clienteCedula: String!): [Reporte]
-    reportesPorFecha(fechaInicio: String!, fechaFin: String!): [Reporte]
     
     # Consultas de Alimentación
     alimentaciones: [Alimentacion]
@@ -30,13 +24,9 @@ type Mutation {
     
     # Mutaciones de Porcino (incluye alimentación)
     crearPorcino(input: PorcinoInput!): Porcino
-    actualizarPorcino(id: ID!, input: ActualizarPorcinoInput!): Porcino
+    actualizarPorcino(input: ActualizarPorcinoInput!): Porcino
     eliminarPorcino(id: ID!): RespuestaEliminacion
-    
-    # Mutaciones de Reporte
-    crearReporte(input: ReporteInput!): Reporte
-    actualizarReporte(id: ID!, input: ActualizarReporteInput!): Reporte
-    eliminarReporte(id: ID!): RespuestaEliminacion
+    crearListaPorcinos(input: [PorcinoInput!]!): [Porcino]
     
     # Mutación específica para actualizar solo alimentación
     actualizarAlimentacion(porcinoId: ID!, input: AlimentacionInput!): Porcino
