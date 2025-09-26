@@ -15,6 +15,7 @@ import com.example.granjasa.Dto.RespuestaEliminacion;
 import com.example.granjasa.Entity.Alimentacion;
 import com.example.granjasa.Entity.Cliente;
 import com.example.granjasa.Entity.Porcino;
+import com.example.granjasa.Service.Implement.AlimentacionService;
 import com.example.granjasa.Service.Implement.ClienteService;
 import com.example.granjasa.Service.Implement.PorcinoService;
 
@@ -26,6 +27,9 @@ public class PorcinoController {
 
     @Autowired
     public ClienteService clienteService;
+
+    @Autowired
+    public AlimentacionService alimentacionService;
 
     @MutationMapping
     public List<Porcino> crearListaPorcinos(@Argument List<PorcinoInput> input) {
@@ -113,14 +117,16 @@ public class PorcinoController {
             if (input.getClienteCedula() != null) {
                 Cliente cliente = clienteService.obtenerClientePorId(input.getClienteCedula());
                 porcino.setCliente(cliente);
+            } else {
+                porcino.setCliente(null);
             }
             if (input.getAlimentacion() != null) {
-                Alimentacion alimentacion = new Alimentacion();
+                Alimentacion alimentacion = alimentacionService.obtenerAlimentacion(input.getId());
+                alimentacion.setId(input.getAlimentacion().getId());
                 alimentacion.setDescripcion(input.getAlimentacion().getDescripcion());
                 alimentacion.setDosis(input.getAlimentacion().getDosis());
                 porcino.setAlimentacion(alimentacion);
             }
-            
 
             Porcino actualizado = porcinoService.actualizarPorcino(input.getId(), porcino);
             return actualizado;

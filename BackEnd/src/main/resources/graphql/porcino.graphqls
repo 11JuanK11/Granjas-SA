@@ -20,6 +20,7 @@ type Alimentacion {
 # INPUTS
 # ==============================
 input AlimentacionInput {
+    id: ID
     descripcion: String
     dosis: String
 }
