@@ -1,0 +1,44 @@
+# Schema de Cliente
+
+# ========================================
+# TIPOS DE DATOS
+# ========================================
+
+type Cliente {
+    # Campos exactos de tu Entity Cliente
+    cedula: Int!        
+    nombres: String!    
+    apellidos: String!  
+    direccion: String!
+    telefono: String!
+    
+    # Relación con porcinos (OneToMany)
+    porcinos: [Porcino!]!
+
+}
+
+# Tipo para respuesta de eliminación (Map<String, String>)
+type RespuestaEliminacion {
+    mensaje: String
+    error: String
+}
+
+# ========================================
+# INPUTS
+# ========================================
+
+input ClienteInput {
+    cedula: Int!        
+    nombres: String!    
+    apellidos: String!  
+    direccion: String!  
+    telefono: String!   
+}
+
+input ActualizarClienteInput {
+    cedula: Int!       
+    nombres: String
+    apellidos: String
+    direccion: String
+    telefono: String
+}
