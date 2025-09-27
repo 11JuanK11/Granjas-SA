@@ -8,6 +8,6 @@ public class ActualizarPorcinoInput {
     private String raza;    
     private Integer edad;
     private Integer peso;
-    private Integer clienteCedula;
+    private ClienteInput cliente;
     private AlimentacionInput alimentacion;
 }
