@@ -47,9 +47,21 @@ public class PorcinoController {
                 porcino.setEdad(porcinoInput.getEdad());
                 porcino.setPeso(porcinoInput.getPeso());
 
-                if (porcinoInput.getClienteCedula() != null) {
-                    Cliente cliente = clienteService.obtenerClientePorId(porcinoInput.getClienteCedula());
-                    porcino.setCliente(cliente);
+                if (porcinoInput.getCliente() != null) {
+                    Cliente cliente = clienteService.obtenerClientePorId(porcinoInput.getCliente().getCedula());
+                    if (cliente == null) {
+                        Cliente nuevoCliente = new Cliente();
+                        nuevoCliente.setCedula(porcinoInput.getCliente().getCedula());  
+                        nuevoCliente.setNombres(porcinoInput.getCliente().getNombres());
+                        nuevoCliente.setApellidos(porcinoInput.getCliente().getApellidos());
+                        nuevoCliente.setTelefono(porcinoInput.getCliente().getTelefono());  
+                        nuevoCliente.setDireccion(porcinoInput.getCliente().getDireccion());
+                        porcino.setCliente(clienteService.crearCliente(nuevoCliente));
+                    } else {
+                        porcino.setCliente(cliente);
+                    }
+                } else {
+                    porcino.setCliente(null);
                 }
 
                 if (porcinoInput.getAlimentacion() != null) {
@@ -74,13 +86,18 @@ public class PorcinoController {
     @MutationMapping
     public Porcino crearPorcino(@Argument PorcinoInput input) {
         try {
-            Cliente cliente = clienteService.obtenerClientePorId(input.getClienteCedula());
             Porcino porcino = new Porcino();
             porcino.setId(input.getId());
             porcino.setRaza(input.getRaza());
             porcino.setEdad(input.getEdad());
             porcino.setPeso(input.getPeso());
-            porcino.setCliente(cliente);
+            
+            if (input.getCliente() != null) {
+                Cliente cliente = clienteService.obtenerClientePorId(input.getCliente().getCedula());
+                porcino.setCliente(cliente);
+            } else {
+                porcino.setCliente(null);
+            }
 
             if (input.getAlimentacion() != null) {
                 Alimentacion alimentacion = new Alimentacion();
@@ -114,12 +131,14 @@ public class PorcinoController {
             if (input.getRaza() != null) porcino.setRaza(input.getRaza());
             if (input.getEdad() != null) porcino.setEdad(input.getEdad());
             if (input.getPeso() != null) porcino.setPeso(input.getPeso());
-            if (input.getClienteCedula() != null) {
-                Cliente cliente = clienteService.obtenerClientePorId(input.getClienteCedula());
+
+            if (input.getCliente() != null) {
+                Cliente cliente = clienteService.obtenerClientePorId(input.getCliente().getCedula());
                 porcino.setCliente(cliente);
             } else {
                 porcino.setCliente(null);
             }
+
             if (input.getAlimentacion() != null) {
                 Alimentacion alimentacion = alimentacionService.obtenerAlimentacion(input.getId());
                 alimentacion.setId(input.getAlimentacion().getId());

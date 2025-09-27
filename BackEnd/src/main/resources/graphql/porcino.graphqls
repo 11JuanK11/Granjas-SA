@@ -30,7 +30,7 @@ input PorcinoInput {
     raza: String!
     edad: Int!
     peso: Int!
-    clienteCedula: Int!          
+    cliente: ClienteInput         
     alimentacion: AlimentacionInput
 }
 
@@ -39,6 +39,6 @@ input ActualizarPorcinoInput {
     raza: String
     edad: Int
     peso: Int
-    clienteCedula: Int
+    cliente: ClienteInput  
     alimentacion: AlimentacionInput
 }

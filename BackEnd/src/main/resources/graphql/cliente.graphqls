@@ -5,7 +5,6 @@
 # ========================================
 
 type Cliente {
-    # Campos exactos de tu Entity Cliente
     cedula: Int!        
     nombres: String!    
     apellidos: String!  
