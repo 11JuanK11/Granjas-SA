@@ -11,9 +11,15 @@ import { Subject } from 'rxjs';
 export class PorcinoServiceGraph {
   constructor(private apollo: Apollo) {}
 
-  // 🔔 Subject para notificaciones
   private porcinoSubject = new Subject<PorcinoEvent>();
   porcino$ = this.porcinoSubject.asObservable();
+
+  /** 🔄 Helper para clonar evitando objetos congelados */
+  private clone<T>(obj: T): T {
+    return typeof structuredClone === 'function'
+      ? structuredClone(obj)
+      : JSON.parse(JSON.stringify(obj));
+  }
 
   // ===================== GET ALL =====================
   getAll(): Observable<Porcino[]> {
@@ -40,7 +46,9 @@ export class PorcinoServiceGraph {
           }
         }
       `
-    }).valueChanges.pipe(map(result => result.data.porcinos));
+    }).valueChanges.pipe(
+      map(result => this.clone(result.data.porcinos))
+    );
   }
 
   // ===================== CREATE =====================
@@ -70,8 +78,10 @@ export class PorcinoServiceGraph {
       `,
       variables: { input: porcino }
     }).pipe(
-      map(result => result.data!.crearPorcino),
-      tap(newPorcino => this.porcinoSubject.next({ porcino: newPorcino })) // 🔔 notificación
+      map(result => this.clone(result.data!.crearPorcino)),
+      tap(newPorcino =>
+        this.porcinoSubject.next({ porcino: this.clone(newPorcino) })
+      )
     );
   }
 
@@ -102,8 +112,10 @@ export class PorcinoServiceGraph {
       `,
       variables: { input: porcinos }
     }).pipe(
-      map(result => result.data!.crearListaPorcinos),
-      tap(newPorcinos => this.porcinoSubject.next({ porcinos: newPorcinos })) // 🔔 notificación múltiple
+      map(result => this.clone(result.data!.crearListaPorcinos)),
+      tap(newPorcinos =>
+        this.porcinoSubject.next({ porcinos: this.clone(newPorcinos) })
+      )
     );
   }
 
@@ -134,8 +146,10 @@ export class PorcinoServiceGraph {
       `,
       variables: { input: porcino }
     }).pipe(
-      map(result => result.data!.actualizarPorcino),
-      tap(updated => this.porcinoSubject.next({ porcino: updated })) // 🔔 notificación
+      map(result => this.clone(result.data!.actualizarPorcino)),
+      tap(updated =>
+        this.porcinoSubject.next({ porcino: this.clone(updated) })
+      )
     );
   }
 
@@ -151,8 +165,8 @@ export class PorcinoServiceGraph {
       `,
       variables: { id }
     }).pipe(
-      map(result => result.data!.eliminarPorcino.mensaje),
-      tap(() => this.porcinoSubject.next({ deletedId: id })) // 🔔 notificación de eliminación
+      map(result => this.clone(result.data!.eliminarPorcino.mensaje)),
+      tap(() => this.porcinoSubject.next({ deletedId: id }))
     );
   }
 }

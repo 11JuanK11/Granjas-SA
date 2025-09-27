@@ -140,8 +140,8 @@ public class PorcinoController {
             }
 
             if (input.getAlimentacion() != null) {
-                Alimentacion alimentacion = alimentacionService.obtenerAlimentacion(input.getId());
-                alimentacion.setId(input.getAlimentacion().getId());
+                Alimentacion alimentacion = alimentacionService.obtenerAlimentacion(porcino.getId());
+//                alimentacion.setId(input.getAlimentacion().getId());
                 alimentacion.setDescripcion(input.getAlimentacion().getDescripcion());
                 alimentacion.setDosis(input.getAlimentacion().getDosis());
                 porcino.setAlimentacion(alimentacion);
@@ -151,7 +151,7 @@ public class PorcinoController {
             return actualizado;
 
         } catch (Exception e) {
-            throw new RuntimeException("Error al actualizar el porcino: " + e.getMessage());
+            throw new RuntimeException("Error al actualizar el porcino: " + e);
         }
     }
 

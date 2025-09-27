@@ -45,7 +45,7 @@ public class ClienteService implements IClienteService{
         Optional<Cliente> cliente = clienteRepository.findById(idCliente);
 
         if (!cliente.isPresent()) {
-            throw new EntityNotFoundException("No se encontró el cliente con cédula: " + idCliente);
+            return null;
         }
         return cliente.get();
     }

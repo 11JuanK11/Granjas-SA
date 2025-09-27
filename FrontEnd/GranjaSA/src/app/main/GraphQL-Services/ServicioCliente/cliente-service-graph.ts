@@ -11,7 +11,6 @@ import { ClienteEvent } from 'app/main/Domain/ClienteEvent';
 export class ClienteServiceGraph {
   constructor(private apollo: Apollo) {}
 
-  // Subject para emitir eventos de cliente (create, update, delete)
   private clienteSubject = new Subject<ClienteEvent>();
   cliente$ = this.clienteSubject.asObservable();
 
@@ -29,7 +28,12 @@ export class ClienteServiceGraph {
           }
         }
       `
-    }).valueChanges.pipe(map(result => result.data.clientes));
+    }).valueChanges.pipe(
+      map(result =>
+        // clonar cada cliente para que no sea inmutable
+        result.data.clientes.map(c => ({ ...c }))
+      )
+    );
   }
 
   // ===================== CREATE =====================
@@ -48,8 +52,13 @@ export class ClienteServiceGraph {
       `,
       variables: { input: cliente }
     }).pipe(
-      map(result => result.data!.crearCliente),
-      tap(newCliente => this.clienteSubject.next({ cliente: newCliente })) // notifica creación
+      map(result => {
+        const created = result.data!.crearCliente;
+        return { ...created }; // 👈 clonado
+      }),
+      tap(newCliente =>
+        this.clienteSubject.next({ cliente: newCliente })
+      )
     );
   }
 
@@ -69,8 +78,13 @@ export class ClienteServiceGraph {
       `,
       variables: { input: cliente }
     }).pipe(
-      map(result => result.data!.actualizarCliente),
-      tap(updated => this.clienteSubject.next({ cliente: updated })) // notifica actualización
+      map(result => {
+        const updated = result.data!.actualizarCliente;
+        return { ...updated }; // 👈 clonado
+      }),
+      tap(updated =>
+        this.clienteSubject.next({ cliente: updated })
+      )
     );
   }
 
@@ -87,7 +101,9 @@ export class ClienteServiceGraph {
       variables: { idCliente: cedula }
     }).pipe(
       map(result => result.data!.eliminarCliente.mensaje),
-      tap(() => this.clienteSubject.next({ deletedCedula: cedula })) // notifica eliminación
+      tap(() =>
+        this.clienteSubject.next({ deletedCedula: cedula })
+      )
     );
   }
 }
