@@ -15,26 +15,28 @@ export class ClienteServiceGraph {
   cliente$ = this.clienteSubject.asObservable();
 
   // ===================== GET ALL =====================
-  getAll(): Observable<Cliente[]> {
-    return this.apollo.watchQuery<{ clientes: Cliente[] }>({
-      query: gql`
-        query {
-          clientes {
-            cedula
-            nombres
-            apellidos
-            direccion
-            telefono
-          }
+getAll(): Observable<Cliente[]> {
+  return this.apollo.watchQuery<{ clientes: Cliente[] }>({
+    query: gql`
+      query {
+        clientes {
+          cedula
+          nombres
+          apellidos
+          direccion
+          telefono
         }
-      `
-    }).valueChanges.pipe(
-      map(result =>
-        // clonar cada cliente para que no sea inmutable
-        result.data.clientes.map(c => ({ ...c }))
-      )
-    );
-  }
+      }
+    `,
+    fetchPolicy: 'network-only',   // 👈 fuerza consulta a la DB
+    nextFetchPolicy: 'network-only'
+  }).valueChanges.pipe(
+    map(result =>
+      result.data.clientes.map(c => ({ ...c }))
+    )
+  );
+}
+
 
   // ===================== CREATE =====================
   create(cliente: Cliente): Observable<Cliente> {

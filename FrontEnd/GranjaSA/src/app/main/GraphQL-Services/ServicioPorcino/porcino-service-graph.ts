@@ -22,34 +22,37 @@ export class PorcinoServiceGraph {
   }
 
   // ===================== GET ALL =====================
-  getAll(): Observable<Porcino[]> {
-    return this.apollo.watchQuery<{ porcinos: Porcino[] }>({
-      query: gql`
-        query {
-          porcinos {
+getAll(): Observable<Porcino[]> {
+  return this.apollo.watchQuery<{ porcinos: Porcino[] }>({
+    query: gql`
+      query {
+        porcinos {
+          id
+          raza
+          edad
+          peso
+          alimentacion {
             id
-            raza
-            edad
-            peso
-            alimentacion {
-              id
-              descripcion
-              dosis
-            }
-            cliente {
-              cedula
-              nombres
-              apellidos
-              direccion
-              telefono
-            }
+            descripcion
+            dosis
+          }
+          cliente {
+            cedula
+            nombres
+            apellidos
+            direccion
+            telefono
           }
         }
-      `
-    }).valueChanges.pipe(
-      map(result => this.clone(result.data.porcinos))
-    );
-  }
+      }
+    `,
+    fetchPolicy: 'network-only',   // 👈 fuerza consulta a la DB
+    nextFetchPolicy: 'network-only'
+  }).valueChanges.pipe(
+    map(result => this.clone(result.data.porcinos))
+  );
+}
+
 
   // ===================== CREATE =====================
   create(porcino: Porcino): Observable<Porcino> {
