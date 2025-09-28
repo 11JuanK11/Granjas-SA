@@ -9,6 +9,7 @@ import { Porcino } from 'app/main/Domain/Porcino';
 import { RazaPorcino } from 'app/main/Domain/RazaPorcino';
 import { ClienteServiceGraph } from 'app/main/GraphQL-Services/ServicioCliente/cliente-service-graph';
 import { PorcinoServiceGraph } from 'app/main/GraphQL-Services/ServicioPorcino/porcino-service-graph';
+import { removeTypename } from 'app/main/Services/funcionUtilitaria';
 
 @Component({
   selector: 'app-formulario-porcinos',
@@ -33,7 +34,7 @@ export class FormularioPorcinos implements OnInit {
     this.servicioCliente.getAll().subscribe({
       next: (clientes) => {
         console.log("Lista de clientes:", clientes);
-        this.clientes = clientes;
+        this.clientes = Array.isArray(clientes) ? clientes.map(c => removeTypename(c)) : [];
       },
       error: (err) => console.error("Error:", err)
     });

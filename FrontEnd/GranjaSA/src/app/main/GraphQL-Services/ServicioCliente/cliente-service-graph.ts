@@ -11,26 +11,32 @@ import { ClienteEvent } from 'app/main/Domain/ClienteEvent';
 export class ClienteServiceGraph {
   constructor(private apollo: Apollo) {}
 
-  // Subject para emitir eventos de cliente (create, update, delete)
   private clienteSubject = new Subject<ClienteEvent>();
   cliente$ = this.clienteSubject.asObservable();
 
   // ===================== GET ALL =====================
-  getAll(): Observable<Cliente[]> {
-    return this.apollo.watchQuery<{ clientes: Cliente[] }>({
-      query: gql`
-        query {
-          clientes {
-            cedula
-            nombres
-            apellidos
-            direccion
-            telefono
-          }
+getAll(): Observable<Cliente[]> {
+  return this.apollo.watchQuery<{ clientes: Cliente[] }>({
+    query: gql`
+      query {
+        clientes {
+          cedula
+          nombres
+          apellidos
+          direccion
+          telefono
         }
-      `
-    }).valueChanges.pipe(map(result => result.data.clientes));
-  }
+      }
+    `,
+    fetchPolicy: 'network-only',   // 👈 fuerza consulta a la DB
+    nextFetchPolicy: 'network-only'
+  }).valueChanges.pipe(
+    map(result =>
+      result.data.clientes.map(c => ({ ...c }))
+    )
+  );
+}
+
 
   // ===================== CREATE =====================
   create(cliente: Cliente): Observable<Cliente> {
@@ -48,8 +54,13 @@ export class ClienteServiceGraph {
       `,
       variables: { input: cliente }
     }).pipe(
-      map(result => result.data!.crearCliente),
-      tap(newCliente => this.clienteSubject.next({ cliente: newCliente })) // notifica creación
+      map(result => {
+        const created = result.data!.crearCliente;
+        return { ...created }; // 👈 clonado
+      }),
+      tap(newCliente =>
+        this.clienteSubject.next({ cliente: newCliente })
+      )
     );
   }
 
@@ -69,8 +80,13 @@ export class ClienteServiceGraph {
       `,
       variables: { input: cliente }
     }).pipe(
-      map(result => result.data!.actualizarCliente),
-      tap(updated => this.clienteSubject.next({ cliente: updated })) // notifica actualización
+      map(result => {
+        const updated = result.data!.actualizarCliente;
+        return { ...updated }; // 👈 clonado
+      }),
+      tap(updated =>
+        this.clienteSubject.next({ cliente: updated })
+      )
     );
   }
 
@@ -87,7 +103,9 @@ export class ClienteServiceGraph {
       variables: { idCliente: cedula }
     }).pipe(
       map(result => result.data!.eliminarCliente.mensaje),
-      tap(() => this.clienteSubject.next({ deletedCedula: cedula })) // notifica eliminación
+      tap(() =>
+        this.clienteSubject.next({ deletedCedula: cedula })
+      )
     );
   }
 }

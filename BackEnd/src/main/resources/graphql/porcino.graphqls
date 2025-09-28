@@ -6,7 +6,7 @@ type Porcino {
     raza: String!
     edad: Int!
     peso: Int!
-    cliente: Cliente!             # Relación ManyToOne
+    cliente: Cliente             # Relación ManyToOne
     alimentacion: Alimentacion    # Relación OneToOne
 }
 
