@@ -34,7 +34,7 @@ services:
       SPRING_DATASOURCE_USERNAME: admin
       SPRING_DATASOURCE_PASSWORD: 123
     expose:
-      - "8080"   # expone el backend en el host: localhost:9090
+      - "8080"
     networks:
       - granja-net
 
