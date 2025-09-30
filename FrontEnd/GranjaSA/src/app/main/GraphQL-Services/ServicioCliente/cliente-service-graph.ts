@@ -28,7 +28,7 @@ getAll(): Observable<Cliente[]> {
         }
       }
     `,
-    fetchPolicy: 'network-only',   // 👈 fuerza consulta a la DB
+    fetchPolicy: 'network-only',
     nextFetchPolicy: 'network-only'
   }).valueChanges.pipe(
     map(result =>
@@ -56,7 +56,7 @@ getAll(): Observable<Cliente[]> {
     }).pipe(
       map(result => {
         const created = result.data!.crearCliente;
-        return { ...created }; // 👈 clonado
+        return { ...created };
       }),
       tap(newCliente =>
         this.clienteSubject.next({ cliente: newCliente })

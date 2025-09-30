@@ -1,13 +1,10 @@
-# ==============================
-# TYPE
-# ==============================
 type Porcino {
     id: ID!
     raza: String!
     edad: Int!
     peso: Int!
-    cliente: Cliente             # Relación ManyToOne
-    alimentacion: Alimentacion    # Relación OneToOne
+    cliente: Cliente
+    alimentacion: Alimentacion
 }
 
 type Alimentacion {
@@ -16,9 +13,6 @@ type Alimentacion {
     dosis: String
 }
 
-# ==============================
-# INPUTS
-# ==============================
 input AlimentacionInput {
     id: ID
     descripcion: String
